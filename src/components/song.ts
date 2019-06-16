@@ -1,13 +1,13 @@
 export default class Song {
-    Artist?: string;
-    Title?: string;
-    Album?: string;
-    Year?: number;
+    Artist: string;
+    Title: string;
+    Album: string;
+    Year: number;
 
-    constructor(artist: string = "",
-        title: string = "",
-        album: string = "",
-        year: number = NaN
+    constructor(artist: string = "<NO ARTIST>",
+        title: string = "<NO TITLE>",
+        album: string = "<NO ALBUM>",
+        year: number = -1
     ) {
         this.Artist = artist;
         this.Title = title;

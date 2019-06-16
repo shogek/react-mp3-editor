@@ -36,8 +36,10 @@ class Test extends Component<Props, State> {
             const writer = new TagWriter(arrayBuffer);
             writer.setFrame("TYER", 2000);
             writer.addTag();
-            FileSaver.saveAs(writer.getBlob(), "modified.mp3");
+            // FileSaver.saveAs(writer.getBlob(), "modified.mp3");
         };
+        reader.onprogress = function (e) {
+        }
         reader.onerror = function (e) {
             debugger;
             console.error("Reader error", reader.error);
@@ -56,7 +58,16 @@ class Test extends Component<Props, State> {
 
     onFileTagsCreateSuccess(tags) {
         debugger;
-        const { artist, title, album, year } = tags.tags;
+        const { artist, title, album, year, genre, trackNo, picture } = tags.tags;
+        if (picture) {
+            const { data, description, format, type } = picture;
+            const tag = document.getElementById("image") as HTMLImageElement;
+            if (tag) {
+                tag.height = 200;
+                const base64String = data.reduce((acc: string, cur: number) => acc + String.fromCharCode(cur), "");
+                tag.src = `data:${format};base64,${btoa(base64String)}`;
+            }
+        }
         const song = new Song(artist, title, album, year);
         debugger;
         const reader = new FileReader();
@@ -82,6 +93,7 @@ class Test extends Component<Props, State> {
         const { song, wasSongSelected } = this.state;
         return (
             <div>
+                <img id="image" src="" />
                 {
                     wasSongSelected
                         ? <SongSquare song={song} />
