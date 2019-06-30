@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import "./upload-songs-button.css";
+import UploadSongsButton from './UploadSongsButton';
 
 type Props = {
     onUpload: Function
 };
 type State = {};
 
-class UploadSongsButton extends Component<Props, State> {
+class UploadSongsButtonContainer extends Component<Props, State> {
     constructor(props) {
         super(props);
 
@@ -29,29 +30,8 @@ class UploadSongsButton extends Component<Props, State> {
     }
 
     render() {
-        return (
-            <div className='row justify-content-center mzt-row-upload-songs'>
-                <div className='col-2'>
-
-                    {/* Visible */}
-                    <div
-                        className="btn btn-primary"
-                        onClick={this.handleClick}
-                    >
-                        Upload songs
-                    </div>
-
-                    {/* Not visible */}
-                    <input
-                        id="btn-upload-songs"
-                        type='file'
-                        multiple
-                        accept='.mp3'
-                        onChange={this.handleFileSelect} />
-                </div>
-            </div>
-        );
+        return <UploadSongsButton handleClick={this.handleClick} handleFileSelect={this.handleFileSelect} />
     }
 }
 
-export default UploadSongsButton;
+export default UploadSongsButtonContainer;
