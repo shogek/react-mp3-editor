@@ -11,6 +11,7 @@ type Props = {
 };
 
 type State = {
+    editable: boolean;
     file: File;
     song?: Song;
 };
@@ -20,6 +21,7 @@ class SongSquareContainer extends Component<Props, State> {
         super(props);
 
         this.state = {
+            editable: false,
             file: this.props.file,
             song: undefined
         };
@@ -28,6 +30,7 @@ class SongSquareContainer extends Component<Props, State> {
         this.onTagReadError = this.onTagReadError.bind(this);
         this.onTagReadSuccess = this.onTagReadSuccess.bind(this);
         this.onCloseClick = this.onCloseClick.bind(this);
+        this.onEditClick = this.onEditClick.bind(this);
         this.init();
     }
 
@@ -62,9 +65,15 @@ class SongSquareContainer extends Component<Props, State> {
         this.props.handleSongRemove(this.state.file.name);
     }
 
+    onEditClick() {
+        this.setState((prev, props) => ({
+            editable: !prev.editable
+        }));
+    }
+
     render() {
-        const { song } = this.state;
-        return song ? (<SongSquare song={song} onClickClose={this.onCloseClick} />) : null;
+        const { song, editable } = this.state;
+        return song ? (<SongSquare editable={editable} song={song} onClickClose={this.onCloseClick} onClickEdit={this.onEditClick} />) : null;
     }
 }
 

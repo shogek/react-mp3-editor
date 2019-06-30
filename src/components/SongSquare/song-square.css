@@ -1,12 +1,12 @@
 .mzt-row-song {
     margin-top: 2%;
+    margin-bottom: 2%;
     padding: 1% 0 1% 0;
     border-style: solid;
     border-bottom-color: white;
     border-radius: 0.2em;
     border-width: 0 0 0 0;
     box-shadow: 3px 3px 10px gray;
-    height: 20%;
 }
 .mzt-row-song:hover {
     -webkit-animation-fill-mode: forwards;
@@ -27,7 +27,7 @@
 .img-thumbnail {
     border-style: none;
     border-radius: 0.4em;
-    height: 20vh;
+    height: 15vh;
     cursor: pointer;
 }
 
@@ -38,5 +38,9 @@
     cursor: pointer;
 }
 .mzt-btn-actions:hover {
-    color: dimgray;
+    color: black;
+}
+
+.form-group > label {
+    font-weight: bold;
 }

@@ -18,7 +18,7 @@ function UploadSongsButton(props: Props) {
                     Upload songs
                 </div>
 
-                {/* Not visible */}
+                {/* Hidden */}
                 <input
                     id="btn-upload-songs"
                     type='file'
