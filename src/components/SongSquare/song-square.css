@@ -1,0 +1,42 @@
+.mzt-row-song {
+    margin-top: 2%;
+    padding: 1% 0 1% 0;
+    border-style: solid;
+    border-bottom-color: white;
+    border-radius: 0.2em;
+    border-width: 0 0 0 0;
+    box-shadow: 3px 3px 10px gray;
+    height: 20%;
+}
+.mzt-row-song:hover {
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    animation-name: hover-shadow;
+    animation-duration: 0.3s;
+}
+
+@keyframes hover-shadow {
+    from { box-shadow: 3px 3px 10px gray; }
+    to { box-shadow: 5px 5px 15px gray; }
+}
+
+.mzt-song-text {
+    padding-left: 0;
+}
+
+.img-thumbnail {
+    border-style: none;
+    border-radius: 0.4em;
+    height: 20vh;
+    cursor: pointer;
+}
+
+.mzt-btn-actions {
+    padding: 0.8em 0.8em 0.8em 0.8em;
+    margin: 0.2em 0 0.2em 0;
+    color: gray;
+    cursor: pointer;
+}
+.mzt-btn-actions:hover {
+    color: dimgray;
+}

@@ -1,0 +1,12 @@
+/* html, body { height: 100%; width: 100%; margin: 0; } */
+/* div { height: 100%; width: 100%; } */
+
+.container {
+    margin-top: 5%;
+    height: 100%; 
+    width: 100%; 
+}
+
+.mzt-row-upload-songs {
+    margin-bottom: 3%;
+}
