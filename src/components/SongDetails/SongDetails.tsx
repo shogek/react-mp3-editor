@@ -33,7 +33,6 @@ class SongDetails extends Component<Props, State> {
         const { title, artist, album, year } = this.state.editedSong;
 
         return (
-            // <div className='row mzt-row-song'>
             <div className='row'>
                 <div className='col'>
                     {/* Title */}
@@ -59,7 +58,9 @@ class SongDetails extends Component<Props, State> {
                             </div>
                         </div>
                     </div>
+                </div>
 
+                <div className='col'>
                     {/* Album */}
                     <div className='row'>
                         <div className='col'>
