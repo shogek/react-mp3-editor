@@ -24,7 +24,7 @@ function SongSquare(props: Props) {
                             src={song.albumCover ? song.albumCover.dataAsTagSrc : DefaultCover} />
                     </div>
 
-                    <div className='col mzt-song-text'>
+                    <div className='col mzt-song-text' onClick={() => onClickEdit()}>
                         <div className='row'>
                             <div className='col'>
                                 <h3>{song.title}</h3>
@@ -42,11 +42,6 @@ function SongSquare(props: Props) {
                         {/* Remove song from list */}
                         <div className='row' title='Remove song from list' onClick={() => onClickClose()}>
                             <i className="fas fa-times mzt-btn-actions"></i>
-                        </div>
-
-                        {/* Edit song */}
-                        <div className='row' title='Edit song' onClick={() => onClickEdit()}>
-                            <i className="fas fa-pencil-alt mzt-btn-actions"></i>
                         </div>
 
                         {/* Download song */}

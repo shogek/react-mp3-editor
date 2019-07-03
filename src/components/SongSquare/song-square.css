@@ -21,6 +21,7 @@
 }
 
 .mzt-song-text {
+    cursor: pointer;
     padding-left: 0;
 }
 
@@ -28,7 +29,6 @@
     border-style: none;
     border-radius: 0.4em;
     height: 15vh;
-    cursor: pointer;
 }
 
 .mzt-btn-actions {

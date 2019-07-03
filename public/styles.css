@@ -1,6 +1,11 @@
 /* html, body { height: 100%; width: 100%; margin: 0; } */
 /* div { height: 100%; width: 100%; } */
 
+/* Always show the vertical scrollbar to avoid content jumping */
+body { 
+    overflow-y: scroll; 
+}
+
 .container {
     margin-top: 5%;
     height: 100%; 
