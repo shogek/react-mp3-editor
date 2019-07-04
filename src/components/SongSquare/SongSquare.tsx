@@ -27,13 +27,17 @@ function SongSquare(props: Props) {
                     <div className='col mzt-song-text' onClick={() => onClickEdit()}>
                         <div className='row'>
                             <div className='col'>
-                                <h3>{song.title}</h3>
+                                <h3>
+                                    <span className='mzt-song-title'>{song.title}</span>
+                                </h3>
                             </div>
                         </div>
 
                         <div className='row'>
                             <div className='col'>
-                                <h4>{song.artist}</h4>
+                                <h4>
+                                    <span className='mzt-song-artist'>{song.artist}</span>
+                                </h4>
                             </div>
                         </div>
                     </div>

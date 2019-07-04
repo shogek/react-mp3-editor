@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap');
+
 .mzt-row-song {
     margin-top: 2%;
     margin-bottom: 2%;
@@ -19,6 +21,15 @@
 @keyframes hover-shadow {
     from { box-shadow: 3px 3px 10px gray; }
     to { box-shadow: 5px 5px 15px gray; }
+}
+
+.mzt-song-title {
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
+}
+
+.mzt-song-artist {
+    font-family: 'Montserrat', sans-serif;
 }
 
 .mzt-song-text {
