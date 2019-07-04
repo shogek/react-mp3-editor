@@ -5,6 +5,7 @@ type Props = {
     originalSong: Song;
 };
 type State = {
+    hasUnsavedChanges: boolean;
     editedSong: Song;
 };
 
@@ -12,10 +13,11 @@ class SongDetails extends Component<Props, State> {
     constructor(props) {
         super(props);
 
-        const oldSong = props.originalSong;
-        const newSong = new Song(oldSong.artist, oldSong.title, oldSong.album, oldSong.year);
+        const oldSong = props.originalSong as Song;
+        const newSong = new Song(oldSong.artist, oldSong.title, oldSong.album, oldSong.year, oldSong.albumCover);
 
         this.state = {
+            hasUnsavedChanges: false,
             editedSong: newSong
         };
 
@@ -26,7 +28,10 @@ class SongDetails extends Component<Props, State> {
         const { editedSong } = this.state;
         const editedField = Object.keys(source)[0];
         editedSong[editedField] = e.target.value;
-        this.setState({ editedSong });
+        this.setState({
+            hasUnsavedChanges: areSongsDifferent(this.props.originalSong, editedSong),
+            editedSong
+        });
     }
 
     render() {
@@ -88,6 +93,15 @@ class SongDetails extends Component<Props, State> {
             </div>
         );
     }
+}
+
+function areSongsDifferent(source: Song, target: Song): boolean {
+    const fields = Object.keys(source);
+    for (var field of fields)
+        if (source[field] !== target[field])
+            return true;
+
+    return false;
 }
 
 export default SongDetails;
