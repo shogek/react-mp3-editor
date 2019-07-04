@@ -2,6 +2,7 @@
     margin-top: 2%;
     margin-bottom: 2%;
     padding: 1% 0 1% 0;
+    padding-bottom: 0 !important;
     border-style: solid;
     border-bottom-color: white;
     border-radius: 0.2em;
@@ -27,8 +28,8 @@
 
 .img-thumbnail {
     border-style: none;
-    border-radius: 0.4em;
     height: 15vh;
+    padding: 0;
 }
 
 .mzt-btn-actions {
@@ -43,4 +44,12 @@
 
 .form-group > label {
     font-weight: bold;
+}
+
+.mzt-row-details {
+    margin-top: 1%;
+}
+
+.mzt-row-song-header {
+    margin-bottom: 1%;
 }

@@ -33,7 +33,7 @@ class SongDetails extends Component<Props, State> {
         const { title, artist, album, year } = this.state.editedSong;
 
         return (
-            <div className='row'>
+            <div className='row mzt-row-details'>
                 <div className='col'>
                     {/* Title */}
                     <div className='row'>

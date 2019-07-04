@@ -16,7 +16,7 @@ function SongSquare(props: Props) {
     return (
         <div className='row mzt-row-song'>
             <div className='col'>
-                <div className='row align-items-center'>
+                <div className='row align-items-center mzt-row-song-header'>
                     <div className='col-auto'>
                         <img
                             className='img-thumbnail'
