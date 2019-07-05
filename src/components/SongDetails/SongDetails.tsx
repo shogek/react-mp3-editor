@@ -3,6 +3,7 @@ import Song from '../../models/song';
 
 type Props = {
     originalSong: Song;
+    onEdit: Function;
 };
 type State = {
     hasUnsavedChanges: boolean;
@@ -28,10 +29,13 @@ class SongDetails extends Component<Props, State> {
         const { editedSong } = this.state;
         const editedField = Object.keys(source)[0];
         editedSong[editedField] = e.target.value;
+        const hasUnsavedChanges = areSongsDifferent(this.props.originalSong, editedSong);
         this.setState({
-            hasUnsavedChanges: areSongsDifferent(this.props.originalSong, editedSong),
+            hasUnsavedChanges,
             editedSong
         });
+
+        this.props.onEdit(editedSong, hasUnsavedChanges);
     }
 
     render() {

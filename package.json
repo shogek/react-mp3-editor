@@ -9,6 +9,7 @@
     "@types/react-dom": "16.8.4",
     "browser-id3-writer": "^4.1.0",
     "file-saver": "^2.0.2",
+    "howler": "^2.1.2",
     "jsmediatags": "^3.8.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

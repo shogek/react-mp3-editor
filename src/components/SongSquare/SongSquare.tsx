@@ -8,10 +8,13 @@ type Props = {
     song: Song;
     onClickClose: Function;
     onClickEdit: Function;
+    onClickDownload: Function;
+    onSongEdited: Function;
 }
 
 function SongSquare(props: Props) {
-    const { editable, song, onClickClose, onClickEdit } = props;
+    const { editable, song, onClickClose,
+        onClickEdit, onClickDownload, onSongEdited } = props;
 
     return (
         <div className='row mzt-row-song'>
@@ -49,14 +52,14 @@ function SongSquare(props: Props) {
                         </div>
 
                         {/* Download song */}
-                        <div className='row' title='Download song'>
+                        <div className='row' title='Download song' onClick={() => onClickDownload(song)}>
                             <i className="fas fa-download mzt-btn-actions"></i>
                         </div>
                     </div>
                 </div>
 
 
-                {editable && <SongDetails originalSong={song} />}
+                {editable && <SongDetails onEdit={onSongEdited} originalSong={song} />}
             </div>
         </div>
     );
