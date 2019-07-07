@@ -1,6 +1,5 @@
 // TODO: Show warning when choosing new songs again
 // TODO: Album cover disappears on download
-// TODO: Reset input
 
 import React, { Component } from "react";
 import SongSquare from "../SongSquare/SongSquareContainer";
