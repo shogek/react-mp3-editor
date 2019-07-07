@@ -1,6 +1,6 @@
 // TODO: Show warning when choosing new songs again
 // TODO: Album cover disappears on download
-// TODO: Fix loader not updating fast enough
+// TODO: Reset input
 
 import React, { Component } from "react";
 import SongSquare from "../SongSquare/SongSquareContainer";
@@ -42,22 +42,28 @@ class MainContainer extends Component<Props, State> {
             songsToProcess: potentialSongs.length
         });
 
+        // TODO: Fix this
+        // The timeout allows the progress bar to keep up but it slows down the tag reading drastically.
+        let timeout = 0;
         for (let potentialSong of potentialSongs) {
-            potentialSong.then(
-                (result: FileSelection) => {
-                    this.setState(prev => ({
-                        uploadedFiles: [...prev.uploadedFiles, result],
-                        songsProcessed: prev.songsProcessed + 1
-                    }));
-                },
-                (error: string) => {
-                    console.log(error);
-                    debugger;
-                    this.setState(prev => ({
-                        songsProcessed: prev.songsProcessed + 1
-                    }));
-                }
-            );
+            setTimeout(() => {
+                potentialSong.then(
+                    (result: FileSelection) => {
+                        this.setState(prev => ({
+                            uploadedFiles: [...prev.uploadedFiles, result],
+                            songsProcessed: prev.songsProcessed + 1
+                        }));
+                    },
+                    (error: string) => {
+                        console.log(error);
+                        debugger;
+                        this.setState(prev => ({
+                            songsProcessed: prev.songsProcessed + 1
+                        }));
+                    }
+                );
+            }, timeout);
+            timeout += 100;
         }
     }
 
