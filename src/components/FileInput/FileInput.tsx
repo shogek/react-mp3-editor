@@ -28,6 +28,11 @@ class FileInput extends Component<Props, State> {
         const selectedFiles = Array.from(e.target.files) as Array<File>;
         const potentialSongs = await FileHelper.convertFilesToSongs(selectedFiles);
         this.props.onFilesSelected(potentialSongs);
+
+        // Reset the input value so the user could upload the same files a second time
+        const input = document.getElementById("btn-upload-songs");
+        if (input)
+            input.nodeValue = '';
     }
 
     render() {
