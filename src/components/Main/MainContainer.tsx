@@ -1,10 +1,18 @@
+// TODO: Show warning when choosing new songs again
+// TODO: Album cover disappears on download
+// TODO: Fix loader not updating fast enough
+
 import React, { Component } from "react";
-import UploadSongsButton from "../UploadSongsButton/UploadSongsButtonContainer";
 import SongSquare from "../SongSquare/SongSquareContainer";
+import FileInput from '../FileInput/FileInput';
+import ProgressBar from "../ProgressBar/ProgressBar";
+import FileSelection from "../../models/fileSelection";
 
 type Props = {};
 type State = {
-    files: Array<File>
+    uploadedFiles: Array<FileSelection>;
+    songsToProcess: number;
+    songsProcessed: number;
 };
 
 class MainContainer extends Component<Props, State> {
@@ -12,49 +20,61 @@ class MainContainer extends Component<Props, State> {
         super(props);
 
         this.state = {
-            files: []
+            uploadedFiles: [],
+            songsToProcess: 0,
+            songsProcessed: 0
         };
 
-        this.handleFileSelect = this.handleFileSelect.bind(this);
         this.handleSongRemove = this.handleSongRemove.bind(this);
-    }
-
-    async handleFileSelect(newFiles: Array<File>) {
-        // On first upload - simply take songs
-        const oldFiles = this.state.files;
-        if (oldFiles.length < 1)
-            return this.setState({ files: newFiles });
-
-        // On second upload - merge avoiding duplicates
-        for (let newFile of newFiles) {
-            let alreadyIncluded = false;
-
-            for (let oldFile of oldFiles)
-                if (oldFile.name === newFile.name)
-                    alreadyIncluded = true;
-
-            if (!alreadyIncluded)
-                oldFiles.push(newFile);
-        }
-
-        this.setState({ files: oldFiles });
+        this.handleFilesSelected = this.handleFilesSelected.bind(this);
     }
 
     handleSongRemove(fileName: string) {
         this.setState({
-            files: this.state.files.filter(f => f.name !== fileName)
+            uploadedFiles: this.state.uploadedFiles.filter(f => f.file.name !== fileName)
         });
     }
 
+    handleFilesSelected(potentialSongs: Array<Promise<FileSelection>>) {
+        this.setState({
+            uploadedFiles: [],
+            songsProcessed: 0,
+            songsToProcess: potentialSongs.length
+        });
+
+        for (let potentialSong of potentialSongs) {
+            potentialSong.then(
+                (result: FileSelection) => {
+                    this.setState(prev => ({
+                        uploadedFiles: [...prev.uploadedFiles, result],
+                        songsProcessed: prev.songsProcessed + 1
+                    }));
+                },
+                (error: string) => {
+                    console.log(error);
+                    debugger;
+                    this.setState(prev => ({
+                        songsProcessed: prev.songsProcessed + 1
+                    }));
+                }
+            );
+        }
+    }
+
     render() {
-        const { files } = this.state;
-        const songSquares = files.length < 1
+        const { uploadedFiles, songsToProcess, songsProcessed } = this.state;
+        const songSquares = uploadedFiles.length < 1
             ? null
-            : files.map(file => <SongSquare key={file.name} file={file} handleSongRemove={this.handleSongRemove} />);
+            : uploadedFiles.map(upload => <SongSquare key={upload.file.name} file={upload.file} song={upload.song} handleSongRemove={this.handleSongRemove} />);
 
         return (
             <div className='container'>
-                <UploadSongsButton onUpload={this.handleFileSelect} />
+                <FileInput onFilesSelected={this.handleFilesSelected} />
+                {
+                    songsToProcess !== songsProcessed
+                        ? <ProgressBar maxValue={songsToProcess} curValue={songsProcessed} heading={`Songs processed: ${songsProcessed}/${songsToProcess}`} />
+                        : null
+                }
                 {songSquares}
             </div>
         );
