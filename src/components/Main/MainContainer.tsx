@@ -69,17 +69,17 @@ class MainContainer extends Component<Props, State> {
 
     render() {
         const { uploadedFiles, songsToProcess, songsProcessed } = this.state;
+        const isLoading = songsToProcess !== songsProcessed && songsToProcess > 0;
         const songSquares = uploadedFiles.length < 1
             ? null
             : uploadedFiles.map(upload => <SongSquare key={upload.file.name} file={upload.file} song={upload.song} handleSongRemove={this.handleSongRemove} />);
 
         return (
             <div className='container'>
-                <FileInput onFilesSelected={this.handleFilesSelected} />
                 {
-                    songsToProcess !== songsProcessed
+                    isLoading
                         ? <ProgressBar maxValue={songsToProcess} curValue={songsProcessed} heading={`Songs processed: ${songsProcessed}/${songsToProcess}`} />
-                        : null
+                        : <FileInput onFilesSelected={this.handleFilesSelected} />
                 }
                 {songSquares}
             </div>
