@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap');
+
+.mzt-song-wrapper {
+    margin-bottom: 1%;
+}
+
+.mzt-col-song-header {
+    cursor: pointer;
+    padding-left: 0;
+}
+
+.mzt-song-title {
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
+}
+
+.mzt-song-artist {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.mzt-btn-actions {
+    padding: 0.8em 0.8em 0.8em 0.8em;
+    margin: 0.2em 0 0.2em 0;
+    color: gray;
+    cursor: pointer;
+}
+.mzt-btn-actions:hover {
+    color: black;
+}
+
+.img-thumbnail {
+    border-style: none;
+    height: 15vh;
+    padding: 0;
+}

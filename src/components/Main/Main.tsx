@@ -1,10 +1,10 @@
 // TODO: Show warning when choosing new songs again
 // TODO: Album cover disappears on download
 
-import React, { Component } from "react";
-import SongSquare from "../SongSquare/SongSquareContainer";
+import React, { Component } from 'react';
+import SongRow from '../SongRow/SongRow';
 import FileInput from '../FileInput/FileInput';
-import ProgressBar from "../ProgressBar/ProgressBar";
+import ProgressBar from '../ProgressBar/ProgressBar';
 import FileSelection from "../../models/fileSelection";
 
 type Props = {};
@@ -14,7 +14,7 @@ type State = {
     songsProcessed: number;
 };
 
-class MainContainer extends Component<Props, State> {
+class Main extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -69,9 +69,6 @@ class MainContainer extends Component<Props, State> {
     render() {
         const { uploadedFiles, songsToProcess, songsProcessed } = this.state;
         const isLoading = songsToProcess !== songsProcessed && songsToProcess > 0;
-        const songSquares = uploadedFiles.length < 1
-            ? null
-            : uploadedFiles.map(upload => <SongSquare key={upload.file.name} file={upload.file} song={upload.song} handleSongRemove={this.handleSongRemove} />);
 
         return (
             <div className='container'>
@@ -80,10 +77,12 @@ class MainContainer extends Component<Props, State> {
                         ? <ProgressBar maxValue={songsToProcess} curValue={songsProcessed} heading={`Songs processed: ${songsProcessed}/${songsToProcess}`} />
                         : <FileInput onFilesSelected={this.handleFilesSelected} />
                 }
-                {songSquares}
+
+                {/* Song rows */}
+                {uploadedFiles.map(u => <SongRow key={u.file.name} file={u.file} song={u.song} handleSongRemove={this.handleSongRemove} />)}
             </div>
         );
     }
 }
 
-export default MainContainer;
+export default Main;
