@@ -11,6 +11,15 @@ export default class SongHelper {
         writer.setFrame('TPE1', [song.artist]);
         writer.setFrame('TALB', song.album);
         writer.setFrame('TYER', song.year);
+        if (song.albumCover) {
+            writer.setFrame('APIC', {
+                type: 3, // Cover (front)
+                data: song.albumCover.dataAsArrayBuffer,
+                description: song.albumCover.description,
+                useUnicodeEncoding: false
+            });
+        }
+
         writer.addTag();
 
         FileSaver.saveAs(writer.getBlob(), fileName);
