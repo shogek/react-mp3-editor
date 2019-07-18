@@ -35,7 +35,7 @@ export default class SongHelper {
 
     static getCopyOfSong(song: Song): Song {
         const cover = song.albumCover;
-        const coverCopy = !cover ? undefined : new AlbumCover(cover.format, cover.dataAsBytes, cover.description, cover.type);
+        const coverCopy = !cover ? undefined : new AlbumCover(cover.format, cover.dataAsArrayBuffer, cover.description, cover.type);
 
         const songCopy = new Song(song.artist, song.title, song.album, song.year, coverCopy);
         return songCopy;
