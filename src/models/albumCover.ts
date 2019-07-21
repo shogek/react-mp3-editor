@@ -17,16 +17,25 @@ export default class AlbumCover {
         this.description = description;
         this.type = type;
 
-        if (dataAsBytes instanceof ArrayBuffer)
-            this.dataAsArrayBuffer = dataAsBytes as ArrayBuffer;
-        else
-            this.dataAsArrayBuffer = Uint8Array.from(dataAsBytes as Array<number>).buffer;
+        this.dataAsArrayBuffer = dataAsBytes instanceof ArrayBuffer
+            ? dataAsBytes
+            : Uint8Array.from(dataAsBytes as Array<number>).buffer;
 
-        this.dataAsBase64 = this._arrayBufferToBase64(dataAsBytes);
-        this.dataAsTagSrc = `data:${this.format};base64,${btoa(this.dataAsBase64)}`;
+        this.dataAsBase64 = this._arrayBufferAsBase64(this.dataAsArrayBuffer);
+        this.dataAsTagSrc = this._getTagSrc(this.format, this.dataAsBase64);
     }
 
-    private _arrayBufferToBase64(buffer): string {
+    public setCover(data: ArrayBuffer) {
+        this.dataAsArrayBuffer = data;
+        this.dataAsBase64 = this._arrayBufferAsBase64(this.dataAsArrayBuffer);
+        this.dataAsTagSrc = this._getTagSrc(this.format, this.dataAsBase64);
+    }
+
+    private _getTagSrc(fileFormat: string, dataAsBase64: string) {
+        return `data:${fileFormat};base64,${btoa(dataAsBase64)}`;
+    }
+
+    private _arrayBufferAsBase64(buffer): string {
         const bytes = new Uint8Array(buffer);
         const len = bytes.byteLength;
 

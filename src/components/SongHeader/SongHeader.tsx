@@ -5,21 +5,23 @@ import './song-header.css';
 
 type Props = {
     song: Song;
+    editableSong: Song;
     handleClickDownload: Function;
     handleClickExpand: Function;
     handleClickRemove: Function;
 };
 
 function SongHeader(props: Props) {
-    const { song, handleClickDownload, handleClickExpand, handleClickRemove } = props;
+    const { song, editableSong, handleClickDownload, handleClickExpand, handleClickRemove } = props;
 
     return (
         <div className='row align-items-center mzt-song-wrapper'>
             <div className='col-auto'>
                 <img
+                    id='yo'
                     className='img-thumbnail'
                     alt='album cover'
-                    src={song.albumCover ? song.albumCover.dataAsTagSrc : DefaultCover} />
+                    src={editableSong.albumCover ? editableSong.albumCover.dataAsTagSrc : DefaultCover} />
             </div>
 
             <div className='col mzt-col-song-header' onClick={() => handleClickExpand()}>

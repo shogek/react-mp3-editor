@@ -30,6 +30,9 @@ export default class SongHelper {
         if (source.artist !== target.artist) return true;
         if (source.album !== target.album) return true;
         if (source.year !== target.year) return true;
+        if (source.albumCover && !target.albumCover) return true;
+        if (!source.albumCover && target.albumCover) return true;
+        if (source.albumCover && target.albumCover && source.albumCover.dataAsTagSrc !== target.albumCover.dataAsTagSrc) return true;
         return false;
     }
 
