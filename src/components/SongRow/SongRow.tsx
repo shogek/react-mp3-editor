@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ChangeEvent } from 'react';
 
 import Song from '../../models/song';
 import SongHelper from '../../helpers/songHelper';
@@ -9,6 +9,7 @@ import SongDetails from '../SongDetails/SongDetails';
 
 import { SongStatuses } from '../SongStatus/songStatuses';
 import "./song-row.css";
+import AlbumCover from '../../models/albumCover';
 
 type Props = {
     file: File;
@@ -75,6 +76,33 @@ class SongRow extends Component<Props, State> {
         reader.readAsArrayBuffer(this.state.file);
     }
 
+    onAlbumCoverUploaded = (e: ChangeEvent<HTMLInputElement>) => {
+        // No file selected
+        if (!e.target.files || e.target.files.length < 1)
+            return;
+
+        const file = e.target.files[0];
+
+        const reader = new FileReader();
+        reader.onerror = (e) => { debugger; };
+        reader.onload = () => {
+            const coverArrayBuffer = reader.result as ArrayBuffer;
+            const { editableSong } = this.state;
+
+            if (editableSong.albumCover)
+                editableSong.albumCover.setCover(coverArrayBuffer);
+            else
+                editableSong.albumCover = new AlbumCover(file.type, coverArrayBuffer, '', 'Front (Cover)');
+
+            const songStatus = SongHelper.areSongsDifferent(this.state.originalSong, editableSong)
+                ? SongStatuses.Modified
+                : SongStatuses.Original;
+
+            this.setState({ editableSong, songStatus });
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
     render() {
         const { originalSong, editableSong, songStatus, isExpanded } = this.state;
 
@@ -89,6 +117,7 @@ class SongRow extends Component<Props, State> {
                         <div className='col'>
                             <SongHeader
                                 song={originalSong}
+                                editableSong={editableSong}
                                 handleClickDownload={this.onSongDownload}
                                 handleClickExpand={this.onSongExpand}
                                 handleClickRemove={this.onSongRemove} />
@@ -97,7 +126,8 @@ class SongRow extends Component<Props, State> {
                             {isExpanded &&
                                 <SongDetails
                                     originalSong={editableSong}
-                                    handleSongEdit={this.onSongEdited} />
+                                    handleSongEdit={this.onSongEdited}
+                                    handleCoverUpload={this.onAlbumCoverUploaded} />
                             }
                         </div>
                     </div>

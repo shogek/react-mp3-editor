@@ -30,12 +30,15 @@ export default class SongHelper {
         if (source.artist !== target.artist) return true;
         if (source.album !== target.album) return true;
         if (source.year !== target.year) return true;
+        if (source.albumCover && !target.albumCover) return true;
+        if (!source.albumCover && target.albumCover) return true;
+        if (source.albumCover && target.albumCover && source.albumCover.dataAsTagSrc !== target.albumCover.dataAsTagSrc) return true;
         return false;
     }
 
     static getCopyOfSong(song: Song): Song {
         const cover = song.albumCover;
-        const coverCopy = !cover ? undefined : new AlbumCover(cover.format, cover.dataAsBytes, cover.description, cover.type);
+        const coverCopy = !cover ? undefined : new AlbumCover(cover.format, cover.dataAsArrayBuffer, cover.description, cover.type);
 
         const songCopy = new Song(song.artist, song.title, song.album, song.year, coverCopy);
         return songCopy;
