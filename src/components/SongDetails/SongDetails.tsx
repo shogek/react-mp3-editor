@@ -1,11 +1,18 @@
 import React from 'react';
 import Song from '../../models/song';
+import './song-details.css';
 
 type Props = {
     originalSong: Song;
     handleSongEdit: Function;
     handleCoverUpload: Function;
 };
+
+function onInputClicked() {
+    const input = document.getElementById("btn-upload-cover");
+    if (input)
+        input.click();
+}
 
 function SongDetails(props: Props) {
     const { title, artist, album, year } = props.originalSong;
@@ -69,12 +76,20 @@ function SongDetails(props: Props) {
 
                 <div className='row'>
                     <div className='col'>
+                        {/* Hidden */}
                         <input
+                            id="btn-upload-cover"
+                            className='mzt-invisible'
                             type='file'
-                            // TODO: Find out what file types are supported
                             accept='.png,.jpg,.jpeg'
-                            onChange={(e) => props.handleCoverUpload(e)}
-                        />
+                            onChange={(e) => props.handleCoverUpload(e)} />
+
+                        {/* Visible */}
+                        <div
+                            className="btn btn-primary"
+                            onClick={onInputClicked}>
+                            Upload album cover
+                        </div>
                     </div>
                 </div>
             </div>

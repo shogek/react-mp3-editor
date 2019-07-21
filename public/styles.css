@@ -15,3 +15,7 @@ body {
 .mzt-row-upload-songs {
     margin-bottom: 3%;
 }
+
+.mzt-invisible {
+    display: none;
+}

@@ -1,6 +1,5 @@
 import React, { Component, ChangeEvent } from 'react';
 import FileHelper from '../../helpers/fileHelper';
-import './file-input.css'
 
 type Props = {
     onFilesSelected: Function
@@ -14,7 +13,7 @@ class FileInput extends Component<Props, State> {
         this.onFilesSelected = this.onFilesSelected.bind(this);
     }
 
-    onInputClicked(e) {
+    onInputClicked() {
         const input = document.getElementById("btn-upload-songs");
         if (input)
             input.click();
@@ -50,6 +49,7 @@ class FileInput extends Component<Props, State> {
                     {/* Hidden */}
                     <input
                         id="btn-upload-songs"
+                        className='mzt-invisible'
                         type='file'
                         multiple
                         accept='.mp3'

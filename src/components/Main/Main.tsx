@@ -1,6 +1,6 @@
 // TODO: Show warning when choosing new songs again
 
-import React, { Component, ChangeEvent } from 'react';
+import React, { Component } from 'react';
 import SongRow from '../SongRow/SongRow';
 import FileInput from '../FileInput/FileInput';
 import ProgressBar from '../ProgressBar/ProgressBar';
