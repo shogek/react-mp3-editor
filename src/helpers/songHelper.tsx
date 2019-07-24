@@ -7,15 +7,23 @@ import AlbumCover from '../models/albumCover';
 export default class SongHelper {
     static downloadSong(arrayBuffer: ArrayBuffer, song: Song, fileName: string): void {
         const writer = new TagWriter(arrayBuffer);
-        writer.setFrame('TIT2', song.title);
-        writer.setFrame('TPE1', [song.artist]);
-        writer.setFrame('TALB', song.album);
-        writer.setFrame('TYER', song.year);
+        if (song.title)
+            writer.setFrame('TIT2', song.title);
+
+        if (song.artist)
+            writer.setFrame('TPE1', [song.artist]);
+
+        if (song.album)
+            writer.setFrame('TALB', song.album);
+
+        if (song.year)
+            writer.setFrame('TYER', song.year);
+
         if (song.albumCover) {
             writer.setFrame('APIC', {
                 type: 3, // Cover (front)
                 data: song.albumCover.dataAsArrayBuffer,
-                description: song.albumCover.description,
+                description: 'Album cover',
                 useUnicodeEncoding: false
             });
         }
@@ -38,7 +46,7 @@ export default class SongHelper {
 
     static getCopyOfSong(song: Song): Song {
         const cover = song.albumCover;
-        const coverCopy = !cover ? undefined : new AlbumCover(cover.format, cover.dataAsArrayBuffer, cover.description, cover.type);
+        const coverCopy = !cover ? undefined : new AlbumCover(cover.format, cover.dataAsArrayBuffer);
 
         const songCopy = new Song(song.artist, song.title, song.album, song.year, coverCopy);
         return songCopy;

@@ -92,7 +92,7 @@ class SongRow extends Component<Props, State> {
             if (editableSong.albumCover)
                 editableSong.albumCover.setCover(coverArrayBuffer);
             else
-                editableSong.albumCover = new AlbumCover(file.type, coverArrayBuffer, '', 'Front (Cover)');
+                editableSong.albumCover = new AlbumCover(file.type, coverArrayBuffer);
 
             const songStatus = SongHelper.areSongsDifferent(this.state.originalSong, editableSong)
                 ? SongStatuses.Modified

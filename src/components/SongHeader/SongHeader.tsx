@@ -13,6 +13,8 @@ type Props = {
 
 function SongHeader(props: Props) {
     const { song, editableSong, handleClickDownload, handleClickExpand, handleClickRemove } = props;
+    const title = song.title || "<NO TITLE>";
+    const artist = song.artist || "<NO ARTIST>";
 
     return (
         <div className='row align-items-center mzt-song-wrapper'>
@@ -28,7 +30,7 @@ function SongHeader(props: Props) {
                 <div className='row'>
                     <div className='col'>
                         <h3>
-                            <span className='mzt-song-title'>{song.title}</span>
+                            <span className='mzt-song-title'>{title}</span>
                         </h3>
                     </div>
                 </div>
@@ -36,7 +38,7 @@ function SongHeader(props: Props) {
                 <div className='row'>
                     <div className='col'>
                         <h4>
-                            <span className='mzt-song-artist'>{song.artist}</span>
+                            <span className='mzt-song-artist'>{artist}</span>
                         </h4>
                     </div>
                 </div>

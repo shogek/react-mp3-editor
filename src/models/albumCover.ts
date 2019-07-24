@@ -1,21 +1,19 @@
 export default class AlbumCover {
     public format: string;
-    public description: string;
-    public type: string;
 
     public dataAsBase64: string;
     public dataAsTagSrc: string;
     public dataAsArrayBuffer: ArrayBuffer;
 
+    /**
+     * @param format ex.: 'image/png'
+     * @param dataAsBytes bytes of the image file
+     */
     constructor(
-        format: string, // ex.: "image/png"
+        format: string,
         dataAsBytes: Array<number> | ArrayBuffer,
-        description: string = '',
-        type: string = "" // ex.: "Cover (front)"
     ) {
         this.format = format;
-        this.description = description;
-        this.type = type;
 
         this.dataAsArrayBuffer = dataAsBytes instanceof ArrayBuffer
             ? dataAsBytes
