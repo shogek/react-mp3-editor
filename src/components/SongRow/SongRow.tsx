@@ -34,7 +34,7 @@ class SongRow extends Component<Props, State> {
             isExpanded: false,
             file: props.file,
             originalSong: props.song,
-            editableSong: SongHelper.getCopyOfSong(props.song)
+            editableSong: props.song.clone()
         };
 
         this.onSongRemove = this.onSongRemove.bind(this);
@@ -44,12 +44,13 @@ class SongRow extends Component<Props, State> {
     }
 
     onSongEdited(updatedSong: Song, updatedField: string, updatedValue: any) {
+        const { originalSong } = this.state;
         const key = Object.keys(updatedField)[0];
         updatedSong[key] = updatedValue;
-        const songStatus = SongHelper.areSongsDifferent(this.state.originalSong, updatedSong)
-            ? SongStatuses.Modified
-            : SongStatuses.Original;
-        this.setState({ editableSong: updatedSong, songStatus });
+        this.setState({
+            editableSong: updatedSong,
+            songStatus: originalSong.equals(updatedSong) ? SongStatuses.Original : SongStatuses.Modified
+        });
     }
 
     onSongRemove() {
@@ -67,7 +68,11 @@ class SongRow extends Component<Props, State> {
         reader.onload = () => {
             const arrayBuffer = reader.result as ArrayBuffer;
             SongHelper.downloadSong(arrayBuffer, editableSong, file.name);
-            this.setState({ originalSong: SongHelper.getCopyOfSong(editableSong), editableSong, songStatus: SongStatuses.Saved });
+            this.setState({
+                originalSong: editableSong.clone(),
+                editableSong,
+                songStatus: SongStatuses.Saved
+            });
         };
         reader.onerror = (err) => {
             console.log(err);
@@ -87,18 +92,17 @@ class SongRow extends Component<Props, State> {
         reader.onerror = (e) => { debugger; };
         reader.onload = () => {
             const coverArrayBuffer = reader.result as ArrayBuffer;
-            const { editableSong } = this.state;
+            const { originalSong, editableSong } = this.state;
 
             if (editableSong.albumCover)
                 editableSong.albumCover.setCover(coverArrayBuffer);
             else
                 editableSong.albumCover = new AlbumCover(file.type, coverArrayBuffer);
 
-            const songStatus = SongHelper.areSongsDifferent(this.state.originalSong, editableSong)
-                ? SongStatuses.Modified
-                : SongStatuses.Original;
-
-            this.setState({ editableSong, songStatus });
+            this.setState({
+                editableSong,
+                songStatus: originalSong.equals(editableSong) ? SongStatuses.Original : SongStatuses.Modified
+            });
         };
         reader.readAsArrayBuffer(file);
     }

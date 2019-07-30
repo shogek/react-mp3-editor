@@ -2,7 +2,6 @@ import TagWriter from 'browser-id3-writer';
 import FileSaver from 'file-saver';
 
 import Song from '../models/song';
-import AlbumCover from '../models/albumCover';
 
 export default class SongHelper {
     static downloadSong(arrayBuffer: ArrayBuffer, song: Song, fileName: string): void {
@@ -31,24 +30,5 @@ export default class SongHelper {
         writer.addTag();
 
         FileSaver.saveAs(writer.getBlob(), fileName);
-    }
-
-    static areSongsDifferent(source: Song, target: Song): boolean {
-        if (source.title !== target.title) return true;
-        if (source.artist !== target.artist) return true;
-        if (source.album !== target.album) return true;
-        if (source.year !== target.year) return true;
-        if (source.albumCover && !target.albumCover) return true;
-        if (!source.albumCover && target.albumCover) return true;
-        if (source.albumCover && target.albumCover && source.albumCover.dataAsTagSrc !== target.albumCover.dataAsTagSrc) return true;
-        return false;
-    }
-
-    static getCopyOfSong(song: Song): Song {
-        const cover = song.albumCover;
-        const coverCopy = !cover ? undefined : new AlbumCover(cover.format, cover.dataAsArrayBuffer);
-
-        const songCopy = new Song(song.artist, song.title, song.album, song.year, coverCopy);
-        return songCopy;
     }
 }

@@ -23,12 +23,6 @@ export default class AlbumCover {
         this.dataAsTagSrc = this._getTagSrc(this.format, this.dataAsBase64);
     }
 
-    public setCover(data: ArrayBuffer) {
-        this.dataAsArrayBuffer = data;
-        this.dataAsBase64 = this._arrayBufferAsBase64(this.dataAsArrayBuffer);
-        this.dataAsTagSrc = this._getTagSrc(this.format, this.dataAsBase64);
-    }
-
     private _getTagSrc(fileFormat: string, dataAsBase64: string) {
         return `data:${fileFormat};base64,${btoa(dataAsBase64)}`;
     }
@@ -43,4 +37,26 @@ export default class AlbumCover {
 
         return binary;
     };
+
+    /**
+     * Sets a new image as the cover.
+     * @param data new image to set
+     */
+    public setCover(data: ArrayBuffer) {
+        this.dataAsArrayBuffer = data;
+        this.dataAsBase64 = this._arrayBufferAsBase64(this.dataAsArrayBuffer);
+        this.dataAsTagSrc = this._getTagSrc(this.format, this.dataAsBase64);
+    }
+
+    /**
+     * Checks object equality between the current album cover and the passed in.
+     * @param other album cover to compare to
+     * @returns true if album covers are equal, else - false
+     */
+    public equals(other?: AlbumCover): boolean {
+        if (!other || this.dataAsTagSrc !== other.dataAsTagSrc)
+            return false;
+
+        return true;
+    }
 }
