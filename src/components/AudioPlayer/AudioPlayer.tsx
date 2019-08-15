@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import LoadingOverlay from 'react-loading-overlay';
 import Song from '../../models/song';
 import WaveSurfer from 'wavesurfer.js';
 import './audio-player.css';
@@ -41,9 +42,10 @@ class AudioPlayer extends Component<Props, State> {
             progressColor: '#232526',
             skipLength: 5
         });
+        waveSurfer.on('ready', () => {
+            this.setState({ waveSurfer });
+        });
         waveSurfer.loadBlob(fileToPlay);
-
-        this.setState({ waveSurfer });
     }
 
     /**
@@ -112,46 +114,54 @@ class AudioPlayer extends Component<Props, State> {
     }
 
     render() {
-        const { isPlaying } = this.state;
+        const { waveSurfer, isPlaying } = this.state;
+        const isLoading = waveSurfer ? false : true;
         const toggleIcon = `fas fa-${isPlaying ? 'pause' : 'play'} mzt-btn-actions`;
 
         return (
-            <div className='row mzt-row-waveform'>
-                <div className='col'>
-                    <div className='row'>
-                        <div className='col'>
-                            <div className='waveform' />
+            <LoadingOverlay
+                className='loading-spinner'
+                active={isLoading}
+                text='Generating audio wave..'
+                spinner={true}>
+
+                <div className='row mzt-row-waveform'>
+                    <div className='col'>
+                        <div className='row'>
+                            <div className='col'>
+                                <div className='waveform' />
+                            </div>
                         </div>
-                    </div>
-                    <div className='row justify-content-center'>
-                        <div className='col-1' >
-                            <i className="fas fa-step-backward mzt-btn-actions"
-                                title='Jump to the beginning of the song'
-                                onClick={() => this.handleClickJump(false)} />
-                        </div>
-                        <div className='col-1'>
-                            <i className="fas fa-chevron-left mzt-btn-actions"
-                                title='Skip the song backwards 5 seconds'
-                                onClick={() => this.handleClickSkip(false)} />
-                        </div>
-                        <div className='col-1'>
-                            <i className={toggleIcon}
-                                title='Play/pause the song'
-                                onClick={() => this.handleClickTogglePlay()} />
-                        </div>
-                        <div className='col-1' >
-                            <i className="fas fa-chevron-right mzt-btn-actions"
-                                title='Skip the song forwards 5 seconds'
-                                onClick={() => this.handleClickSkip(true)} />
-                        </div>
-                        <div className='col-1' >
-                            <i className="fas fa-step-forward mzt-btn-actions"
-                                title='Jump to the end of the song'
-                                onClick={() => this.handleClickJump(true)} />
+                        <div className='row justify-content-center'>
+                            <div className='col-1' >
+                                <i className="fas fa-step-backward mzt-btn-actions"
+                                    title='Jump to the beginning of the song'
+                                    onClick={() => this.handleClickJump(false)} />
+                            </div>
+                            <div className='col-1'>
+                                <i className="fas fa-chevron-left mzt-btn-actions"
+                                    title='Skip the song backwards 5 seconds'
+                                    onClick={() => this.handleClickSkip(false)} />
+                            </div>
+                            <div className='col-1'>
+                                <i className={toggleIcon}
+                                    title='Play/pause the song'
+                                    onClick={() => this.handleClickTogglePlay()} />
+                            </div>
+                            <div className='col-1' >
+                                <i className="fas fa-chevron-right mzt-btn-actions"
+                                    title='Skip the song forwards 5 seconds'
+                                    onClick={() => this.handleClickSkip(true)} />
+                            </div>
+                            <div className='col-1' >
+                                <i className="fas fa-step-forward mzt-btn-actions"
+                                    title='Jump to the end of the song'
+                                    onClick={() => this.handleClickJump(true)} />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </LoadingOverlay>
         );
     }
 }

@@ -13,6 +13,7 @@
     "jsmediatags": "^3.8.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-loading-overlay": "^1.0.1",
     "react-scripts": "3.0.1",
     "react-sweet-progress": "^1.1.2",
     "typescript": "3.5.1",
