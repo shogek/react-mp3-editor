@@ -10,6 +10,7 @@ import SongDetails from '../SongDetails/SongDetails';
 import { SongStatuses } from '../SongStatus/songStatuses';
 import "./song-row.css";
 import AlbumCover from '../../models/albumCover';
+import AudioPlayer from '../AudioPlayer/AudioPlayer';
 
 type Props = {
     file: File;
@@ -108,7 +109,7 @@ class SongRow extends Component<Props, State> {
     }
 
     render() {
-        const { originalSong, editableSong, songStatus, isExpanded } = this.state;
+        const { file, originalSong, editableSong, songStatus, isExpanded } = this.state;
 
         return (
             <div className='row align-items-center'>
@@ -126,6 +127,11 @@ class SongRow extends Component<Props, State> {
                                 handleClickExpand={this.onSongExpand}
                                 handleClickRemove={this.onSongRemove} />
 
+                            {isExpanded &&
+                                <AudioPlayer
+                                    fileToPlay={file}
+                                    songToPlay={originalSong} />
+                            }
 
                             {isExpanded &&
                                 <SongDetails
