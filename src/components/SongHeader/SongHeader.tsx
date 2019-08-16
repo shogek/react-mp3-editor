@@ -4,6 +4,7 @@ import DefaultCover from './cover_350x350.png';
 import './song-header.css';
 
 type Props = {
+    file: File;
     song: Song;
     editableSong: Song;
     handleClickDownload: Function;
@@ -12,9 +13,8 @@ type Props = {
 };
 
 function SongHeader(props: Props) {
-    const { song, editableSong, handleClickDownload, handleClickExpand, handleClickRemove } = props;
-    const title = song.title || "<NO TITLE>";
-    const artist = song.artist || "<NO ARTIST>";
+    const { file, song, editableSong, handleClickDownload, handleClickExpand, handleClickRemove } = props;
+    const title = `${song.title || '<NO TITLE>'} by ${song.artist || '<NO ARTIST>'}`;
 
     return (
         <div className='row align-items-center mzt-song-wrapper'>
@@ -30,7 +30,7 @@ function SongHeader(props: Props) {
                 <div className='row'>
                     <div className='col'>
                         <h3>
-                            <span className='mzt-song-title'>{title}</span>
+                            <span className='mzt-song-filename'>{file.name}</span>
                         </h3>
                     </div>
                 </div>
@@ -38,7 +38,7 @@ function SongHeader(props: Props) {
                 <div className='row'>
                     <div className='col'>
                         <h4>
-                            <span className='mzt-song-artist'>{artist}</span>
+                            <span className='mzt-song-title'>{title}</span>
                         </h4>
                     </div>
                 </div>

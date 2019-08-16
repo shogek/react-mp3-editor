@@ -9,12 +9,12 @@
     padding-left: 0;
 }
 
-.mzt-song-title {
+.mzt-song-filename {
     font-weight: bold;
     font-family: 'Roboto', sans-serif;
 }
 
-.mzt-song-artist {
+.mzt-song-title {
     font-family: 'Montserrat', sans-serif;
 }
 

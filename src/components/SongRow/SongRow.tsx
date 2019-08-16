@@ -121,6 +121,7 @@ class SongRow extends Component<Props, State> {
                     <div className='row mzt-row-song'>
                         <div className='col'>
                             <SongHeader
+                                file={file}
                                 song={originalSong}
                                 editableSong={editableSong}
                                 handleClickDownload={this.onSongDownload}
