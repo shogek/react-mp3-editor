@@ -16,3 +16,7 @@ body {
 .mzt-invisible {
     display: none;
 }
+
+.mzt-hidden {
+    visibility: hidden;
+}

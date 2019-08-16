@@ -123,9 +123,11 @@ class AudioPlayer extends Component<Props, State> {
                 className='loading-spinner'
                 active={isLoading}
                 text='Generating audio wave..'
-                spinner={true}>
+                spinner={true}
+                fadeSpeed={200}
+            >
 
-                <div className='row mzt-row-waveform'>
+                <div className={`row mzt-row-waveform ${isLoading ? 'mzt-hidden' : ''}`}>
                     <div className='col'>
                         <div className='row'>
                             <div className='col'>
