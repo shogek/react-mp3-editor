@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import LoadingOverlay from 'react-loading-overlay';
 import Song from '../../models/song';
 import WaveSurfer from 'wavesurfer.js';
+import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
 import './audio-player.css';
 
 type Props = {
@@ -40,7 +41,27 @@ class AudioPlayer extends Component<Props, State> {
             cursorColor: '#007bff',
             waveColor: '#525353',
             progressColor: '#232526',
-            skipLength: 5
+            skipLength: 5,
+            plugins: [
+                CursorPlugin.create({
+                    customStyle: {
+                        // the cursor doesn't center to the mouse so we shift it
+                        'margin-left': '13.5px'
+                    },
+                    // hide cursor when mouse leaves the wave
+                    hideOnBlur: true,
+                    width: '2px',
+                    showTime: true,
+                    opacity: '1',
+                    customShowTimeStyle: {
+                        opacity: 1,
+                        'margin-left': '5px',
+                        'padding': '1px 7px 3px 7px',
+                        'border-radius': '0.2em',
+                        'background-color': 'white'
+                    }
+                })
+            ]
         });
         waveSurfer.on('ready', () => {
             this.setState({ waveSurfer });
