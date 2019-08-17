@@ -38,7 +38,7 @@ class AudioPlayer extends Component<Props, State> {
             container: waveformDiv,
             backend: 'WebAudio',
             cursorWidth: 2,
-            cursorColor: '#007bff',
+            cursorColor: '#232526',
             waveColor: '#525353',
             progressColor: '#232526',
             skipLength: 5,
@@ -48,6 +48,7 @@ class AudioPlayer extends Component<Props, State> {
                         // the cursor doesn't center to the mouse so we shift it
                         'margin-left': '13.5px'
                     },
+                    color: '#007bff',
                     // hide cursor when mouse leaves the wave
                     hideOnBlur: true,
                     width: '2px',
