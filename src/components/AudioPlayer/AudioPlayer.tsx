@@ -4,6 +4,7 @@ import LoadingOverlay from 'react-loading-overlay';
 import Song from '../../models/song';
 import WaveSurfer from 'wavesurfer.js';
 import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
+import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 import './audio-player.css';
 
 type Props = {
@@ -12,15 +13,24 @@ type Props = {
 };
 type State = {
     isPlaying: boolean;
+    cutStart: number;
+    cutEnd: number;
     waveSurfer?: WaveSurfer;
 };
 
 class AudioPlayer extends Component<Props, State> {
+    // Used when setting what part of the song to cut out
+    private readonly REGION_START = 10;
+    private readonly REGION_END = 50;
+    private readonly REGION_COLOR = 'rgba(0, 123, 255, 0.48)';
+
     constructor(props: Props) {
         super(props);
 
         this.state = {
             isPlaying: false,
+            cutStart: this.REGION_START,
+            cutEnd: this.REGION_END
         };
     }
 
@@ -43,6 +53,7 @@ class AudioPlayer extends Component<Props, State> {
             progressColor: '#232526',
             skipLength: 5,
             plugins: [
+                // Add a vertical cursor on the wave form when the mouse hovers over it
                 CursorPlugin.create({
                     customStyle: {
                         // the cursor doesn't center to the mouse so we shift it
@@ -61,13 +72,74 @@ class AudioPlayer extends Component<Props, State> {
                         'border-radius': '0.2em',
                         'background-color': 'white'
                     }
+                }),
+                // Add a dragable region over the waveform that selects a part of the song
+                RegionsPlugin.create({
+                    regions: [{
+                        start: this.REGION_START,  // start region from which second of the song
+                        end: this.REGION_END,      // end region at which second of the song
+                        color: this.REGION_COLOR
+                    }]
                 })
             ]
         });
         waveSurfer.on('ready', () => {
+            waveSurfer.on('region-update-end', this.onCropRegionUpdateEnd);
             this.setState({ waveSurfer });
         });
         waveSurfer.loadBlob(fileToPlay);
+    }
+
+    /**
+     * Called when the dragable area has finished moving.
+     * Update the cut's start and end times.
+     */
+    onCropRegionUpdateEnd = (params) => {
+        const { start, end } = params;
+        const { cutStart, cutEnd, waveSurfer } = this.state;
+
+        if (!waveSurfer)
+            return;
+
+        // Funny guy moved one end of the region over the other end so now we have to recreate it
+        if (Math.abs(start - end) < 0.3) {
+            waveSurfer.clearRegions();
+            const newRegion = waveSurfer.addRegion({
+                // Use the last valid start/end time positions
+                start: cutStart,
+                end: cutEnd,
+                color: this.REGION_COLOR
+            });
+            newRegion.play();
+            this.setState({
+                waveSurfer,
+                isPlaying: true
+            });
+            return;
+        }
+
+        let playFrom = 0;
+
+        // The ending region was moved
+        if (end !== cutEnd) {
+            playFrom = end;
+            this.setState({
+                cutEnd: end
+            });
+        }
+
+        // The starting region was moved
+        if (start !== cutStart) {
+            playFrom = start;
+            this.setState({
+                cutStart: start
+            });
+        }
+
+        waveSurfer.play(playFrom);
+        this.setState({
+            isPlaying: true
+        });
     }
 
     /**
