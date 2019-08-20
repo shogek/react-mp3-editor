@@ -85,13 +85,45 @@ class AudioPlayer extends Component<Props, State> {
         });
         waveSurfer.on('ready', () => {
             waveSurfer.on('region-update-end', this.onCropRegionUpdateEnd);
+            waveSurfer.on('region-updated', this.onCropRegionUpdated);
             this.setState({ waveSurfer });
         });
         waveSurfer.loadBlob(fileToPlay);
     }
 
     /**
-     * Called when the dragable area has finished moving.
+     * Called when the draggable area has been moved.
+     * Recreate region if starting end overlaps the ending.
+     */
+    onCropRegionUpdated = (params) => {
+        const { start, end } = params;
+        const { cutStart, cutEnd, waveSurfer, isPlaying } = this.state;
+
+        if (!waveSurfer)
+            return;
+
+        // Check if one end of the region was dragged over the other one
+        if (Math.abs(start - end) > 0.25)
+            return;
+
+        // Recreate region from last know valid positions
+        waveSurfer.clearRegions();
+        const newRegion = waveSurfer.addRegion({
+            start: cutStart,
+            end: cutEnd,
+            color: this.REGION_COLOR
+        });
+
+        if (isPlaying)
+            newRegion.play();
+
+        this.setState({
+            waveSurfer
+        });
+    }
+
+    /**
+     * Called when the draggable area has finished moving (any dragging stopped).
      * Update the cut's start and end times.
      */
     onCropRegionUpdateEnd = (params) => {
@@ -100,23 +132,6 @@ class AudioPlayer extends Component<Props, State> {
 
         if (!waveSurfer)
             return;
-
-        // Funny guy moved one end of the region over the other end so now we have to recreate it
-        if (Math.abs(start - end) < 0.3) {
-            waveSurfer.clearRegions();
-            const newRegion = waveSurfer.addRegion({
-                // Use the last valid start/end time positions
-                start: cutStart,
-                end: cutEnd,
-                color: this.REGION_COLOR
-            });
-            newRegion.play();
-            this.setState({
-                waveSurfer,
-                isPlaying: true
-            });
-            return;
-        }
 
         let playFrom = 0;
 
