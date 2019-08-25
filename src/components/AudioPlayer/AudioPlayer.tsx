@@ -19,9 +19,9 @@ type State = {
 };
 
 class AudioPlayer extends Component<Props, State> {
-    // Used when setting what part of the song to cut out
-    private readonly REGION_START = 10;
-    private readonly REGION_END = 50;
+    /**
+     * Used when recreating a region in case of error.
+     */
     private readonly REGION_COLOR = 'rgba(0, 123, 255, 0.48)';
 
     constructor(props: Props) {
@@ -29,8 +29,8 @@ class AudioPlayer extends Component<Props, State> {
 
         this.state = {
             isPlaying: false,
-            cutStart: this.REGION_START,
-            cutEnd: this.REGION_END
+            cutStart: 0,
+            cutEnd: 1,
         };
     }
 
@@ -73,22 +73,45 @@ class AudioPlayer extends Component<Props, State> {
                         'background-color': 'white'
                     }
                 }),
-                // Add a dragable region over the waveform that selects a part of the song
-                RegionsPlugin.create({
-                    regions: [{
-                        start: this.REGION_START,  // start region from which second of the song
-                        end: this.REGION_END,      // end region at which second of the song
-                        color: this.REGION_COLOR
-                    }]
-                })
+                // Initialize the plugin that adds a dragable region over the waveform
+                RegionsPlugin.create()
             ]
         });
-        waveSurfer.on('ready', () => {
-            waveSurfer.on('region-update-end', this.onCropRegionUpdateEnd);
-            waveSurfer.on('region-updated', this.onCropRegionUpdated);
-            this.setState({ waveSurfer });
-        });
+        waveSurfer.on('ready', () => this.onWaveSurferReady(waveSurfer));
         waveSurfer.loadBlob(fileToPlay);
+    }
+
+    /**
+     * Start listening to region events.
+     * Draw the region itself.
+     */
+    onWaveSurferReady = (waveSurfer: WaveSurfer) => {
+        waveSurfer.on('region-update-end', this.onCropRegionUpdateEnd);
+        waveSurfer.on('region-updated', this.onCropRegionUpdated);
+
+        let cutStart: number;
+        let cutEnd: number;
+        const duration = waveSurfer.getDuration();
+
+        if (duration > 40) {
+            cutStart = 20;
+            cutEnd = duration - 20;
+        } else {
+            cutStart = 0;
+            cutEnd = duration;
+        }
+
+        waveSurfer.addRegion({
+            start: cutStart,
+            end: cutEnd,
+            color: this.REGION_COLOR,
+        });
+
+        this.setState({
+            waveSurfer,
+            cutStart,
+            cutEnd,
+        });
     }
 
     /**
