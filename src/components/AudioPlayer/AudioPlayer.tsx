@@ -250,6 +250,7 @@ class AudioPlayer extends Component<Props, State> {
         const { waveSurfer, isPlaying } = this.state;
         const isLoading = waveSurfer ? false : true;
         const toggleIcon = `fas fa-${isPlaying ? 'pause' : 'play'} mzt-btn-actions`;
+        const tooltip = isPlaying ? 'Pause' : 'Play';
 
         return (
             <LoadingOverlay
@@ -271,10 +272,7 @@ class AudioPlayer extends Component<Props, State> {
 
                             {/* [BUTTON] Jump to the beginning of the song */}
                             <div className='col-1' >
-                                <Tippy content='Jump to start' arrow={true}
-                                    placement='bottom'
-                                    delay={400}
-                                >
+                                <Tippy content='Jump to start' arrow={true} placement='bottom' delay={400} >
                                     <i className="fas fa-step-backward mzt-btn-actions"
                                         onClick={() => this.handleClickJump(false)} />
                                 </Tippy>
@@ -282,11 +280,7 @@ class AudioPlayer extends Component<Props, State> {
 
                             {/* [BUTTON] Rewind 5 seconds */}
                             <div className='col-1'>
-                                <Tippy content='Rewind 5 seconds'
-                                    arrow={true}
-                                    placement='bottom'
-                                    delay={400}
-                                >
+                                <Tippy content='Rewind 5 seconds' arrow={true} placement='bottom' delay={400} >
                                     <i className="fas fa-chevron-left mzt-btn-actions"
                                         onClick={() => this.handleClickSkip(false)} />
                                 </Tippy>
@@ -295,11 +289,7 @@ class AudioPlayer extends Component<Props, State> {
 
                             {/* [BUTTON] Play/pause the song */}
                             <div className='col-1'>
-                                <Tippy content='Play / pause'
-                                    arrow={true}
-                                    placement='bottom'
-                                    delay={400}
-                                >
+                                <Tippy content={tooltip} arrow={true} placement='bottom' delay={400} >
                                     <i className={toggleIcon}
                                         onClick={() => this.handleClickTogglePlay()} />
                                 </Tippy>
@@ -307,11 +297,7 @@ class AudioPlayer extends Component<Props, State> {
 
                             {/* [BUTTON] Fast forward 5 seconds */}
                             <div className='col-1' >
-                                <Tippy content='Fast forward 5 seconds'
-                                    arrow={true}
-                                    placement='bottom'
-                                    delay={400}
-                                >
+                                <Tippy content='Fast forward 5 seconds' arrow={true} placement='bottom' delay={400} >
                                 <i className="fas fa-chevron-right mzt-btn-actions"
                                     onClick={() => this.handleClickSkip(true)} />
                                 </Tippy>
@@ -319,11 +305,7 @@ class AudioPlayer extends Component<Props, State> {
 
                             {/* [BUTTON] Jump to end */}
                             <div className='col-1' >
-                                <Tippy content='Jump to end'
-                                    arrow={true}
-                                    placement='bottom'
-                                    delay={400}
-                                >
+                                <Tippy content='Jump to end' arrow={true} placement='bottom' delay={400} >
                                 <i className="fas fa-step-forward mzt-btn-actions"
                                     onClick={() => this.handleClickJump(true)} />
                                 </Tippy>
