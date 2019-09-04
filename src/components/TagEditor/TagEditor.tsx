@@ -1,6 +1,6 @@
 import React from 'react';
 import Song from '../../models/song';
-import './song-details.css';
+import './tag-editor.css';
 
 type Props = {
     originalSong: Song;
@@ -14,7 +14,7 @@ function onInputClicked() {
         input.click();
 }
 
-function SongDetails(props: Props) {
+function TagEditor(props: Props) {
     const { title, artist, album, year } = props.originalSong;
 
     return (
@@ -98,4 +98,4 @@ function SongDetails(props: Props) {
     );
 }
 
-export default SongDetails;
+export default TagEditor;

@@ -5,7 +5,7 @@ import SongHelper from '../../helpers/songHelper';
 
 import SongStatus from '../SongStatus/SongStatus';
 import SongHeader from '../SongHeader/SongHeader';
-import SongDetails from '../SongDetails/SongDetails';
+import TagEditor from '../TagEditor/TagEditor';
 
 import { SongStatuses } from '../SongStatus/songStatuses';
 import "./song-row.css";
@@ -135,7 +135,7 @@ class SongRow extends Component<Props, State> {
                             }
 
                             {isExpanded &&
-                                <SongDetails
+                                <TagEditor
                                     originalSong={editableSong}
                                     handleSongEdit={this.onSongEdited}
                                     handleCoverUpload={this.onAlbumCoverUploaded} />
