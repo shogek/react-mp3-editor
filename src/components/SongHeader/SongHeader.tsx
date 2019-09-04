@@ -1,4 +1,5 @@
 import React from 'react';
+import Tippy from '@tippy.js/react';
 import Song from '../../models/song';
 import DefaultCover from './cover_350x350.png';
 import './song-header.css';
@@ -51,8 +52,10 @@ function SongHeader(props: Props) {
                 </div>
 
                 {/* Download song */}
-                <div className='row' title='Download song' onClick={() => handleClickDownload()}>
-                    <i className="fas fa-download mzt-btn-actions"></i>
+                <div className='row' onClick={() => handleClickDownload()}>
+                    <Tippy content='Download the song' arrow={true} placement='right' delay={400}>
+                        <i className="fas fa-download mzt-btn-actions"></i>
+                    </Tippy>
                 </div>
             </div>
         </div>
