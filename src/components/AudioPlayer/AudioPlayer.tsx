@@ -325,7 +325,6 @@ class AudioPlayer extends Component<Props, State> {
                                     delay={400}
                                 >
                                 <i className="fas fa-step-forward mzt-btn-actions"
-                                    title='Jump to the end of the song'
                                     onClick={() => this.handleClickJump(true)} />
                                 </Tippy>
                             </div>
