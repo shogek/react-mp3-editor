@@ -1,3 +1,12 @@
 .mzt-row-waveform {
     margin-top: 2%;
 }
+
+/* wavesurfer.js */
+.wavesurfer-handle.wavesurfer-handle-start,
+.wavesurfer-handle.wavesurfer-handle-end {
+    background-color: rgb(0, 123, 255) !important;
+    max-width: 8px !important;
+    min-width: 8px !important;
+    width: 3% !important;
+}
