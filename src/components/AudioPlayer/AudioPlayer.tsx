@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import LoadingOverlay from 'react-loading-overlay';
+import Tippy from '@tippy.js/react';
 import Song from '../../models/song';
 import WaveSurfer from 'wavesurfer.js';
 import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
@@ -267,30 +268,66 @@ class AudioPlayer extends Component<Props, State> {
                             </div>
                         </div>
                         <div className='row justify-content-center'>
+
+                            {/* [BUTTON] Jump to the beginning of the song */}
                             <div className='col-1' >
-                                <i className="fas fa-step-backward mzt-btn-actions"
-                                    title='Jump to the beginning of the song'
-                                    onClick={() => this.handleClickJump(false)} />
+                                <Tippy content='Jump to start' arrow={true}
+                                    placement='bottom'
+                                    delay={400}
+                                >
+                                    <i className="fas fa-step-backward mzt-btn-actions"
+                                        onClick={() => this.handleClickJump(false)} />
+                                </Tippy>
                             </div>
+
+                            {/* [BUTTON] Rewind 5 seconds */}
                             <div className='col-1'>
-                                <i className="fas fa-chevron-left mzt-btn-actions"
-                                    title='Skip the song backwards 5 seconds'
-                                    onClick={() => this.handleClickSkip(false)} />
+                                <Tippy content='Rewind 5 seconds'
+                                    arrow={true}
+                                    placement='bottom'
+                                    delay={400}
+                                >
+                                    <i className="fas fa-chevron-left mzt-btn-actions"
+                                        onClick={() => this.handleClickSkip(false)} />
+                                </Tippy>
+                                
                             </div>
+
+                            {/* [BUTTON] Play/pause the song */}
                             <div className='col-1'>
-                                <i className={toggleIcon}
-                                    title='Play/pause the song'
-                                    onClick={() => this.handleClickTogglePlay()} />
+                                <Tippy content='Play / pause'
+                                    arrow={true}
+                                    placement='bottom'
+                                    delay={400}
+                                >
+                                    <i className={toggleIcon}
+                                        onClick={() => this.handleClickTogglePlay()} />
+                                </Tippy>
                             </div>
+
+                            {/* [BUTTON] Fast forward 5 seconds */}
                             <div className='col-1' >
+                                <Tippy content='Fast forward 5 seconds'
+                                    arrow={true}
+                                    placement='bottom'
+                                    delay={400}
+                                >
                                 <i className="fas fa-chevron-right mzt-btn-actions"
-                                    title='Skip the song forwards 5 seconds'
                                     onClick={() => this.handleClickSkip(true)} />
+                                </Tippy>
                             </div>
+
+                            {/* [BUTTON] Jump to end */}
                             <div className='col-1' >
+                                <Tippy content='Jump to end'
+                                    arrow={true}
+                                    placement='bottom'
+                                    delay={400}
+                                >
                                 <i className="fas fa-step-forward mzt-btn-actions"
                                     title='Jump to the end of the song'
                                     onClick={() => this.handleClickJump(true)} />
+                                </Tippy>
                             </div>
                         </div>
                     </div>
