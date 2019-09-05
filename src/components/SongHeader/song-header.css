@@ -1,11 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap');
 
 .mzt-song-wrapper {
-    margin-bottom: 1%;
+    margin-bottom: 2%;
 }
 
 .mzt-col-song-header {
-    cursor: pointer;
     padding-left: 0;
 }
 
@@ -23,9 +22,17 @@
     margin: 0.2em 0 0.2em 0;
     color: gray;
     cursor: pointer;
+    outline-color: white;
 }
 .mzt-btn-actions:hover {
     color: black;
+    outline-color: white;
+}
+.mzt-btn-actions.active {
+  background: -webkit-gradient(linear, left top, left bottom, from(#21D4FD), to(#B721FF));
+  background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
 }
 
 .img-thumbnail {
