@@ -20,9 +20,9 @@ type State = {
 };
 
 class AudioPlayer extends Component<Props, State> {
-    /**
-     * Used when recreating a region in case of error.
-     */
+  /**
+   * Used when recreating a region in case of error.
+   */
   private readonly REGION_COLOR = 'rgba(0, 123, 255, 0.48)';
 
   constructor(props: Props) {
@@ -163,7 +163,7 @@ class AudioPlayer extends Component<Props, State> {
 
     let playFrom = 0;
 
-        // The ending region was moved
+    // The ending region was moved
     if (end !== cutEnd) {
       playFrom = end;
       this.setState({
@@ -171,7 +171,7 @@ class AudioPlayer extends Component<Props, State> {
       });
     }
 
-        // The starting region was moved
+    // The starting region was moved
     if (start !== cutStart) {
       playFrom = start;
       this.setState({

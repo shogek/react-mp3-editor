@@ -1,14 +1,14 @@
 .mzt-row-waveform {
-    margin-bottom: 2%;
+  margin-bottom: 2%;
 }
 
 /* wavesurfer.js */
 .wavesurfer-handle.wavesurfer-handle-start,
 .wavesurfer-handle.wavesurfer-handle-end {
-    background-color: #ffffff00 !important; /* invisible */
-    max-width: 8px !important;
-    min-width: 8px !important;
-    width: 3% !important;
+  background-color: #ffffff00 !important; /* invisible */
+  max-width: 8px !important;
+  min-width: 8px !important;
+  width: 3% !important;
 }
 
 .wavesurfer-region {

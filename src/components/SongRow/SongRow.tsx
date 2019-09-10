@@ -1,16 +1,11 @@
 import React, { Component, ChangeEvent } from 'react';
-
 import Song from '../../models/song';
 import SongHelper from '../../helpers/songHelper';
-
-import SongStatus from '../SongStatus/SongStatus';
 import SongHeader from '../SongHeader/SongHeader';
 import TagEditor from '../TagEditor/TagEditor';
-
-import { SongStatuses } from '../SongStatus/songStatuses';
-import './song-row.css';
 import AlbumCover from '../../models/albumCover';
 import AudioPlayer from '../AudioPlayer/AudioPlayer';
+import './song-row.css';
 
 type Props = {
   file: File;
@@ -18,7 +13,6 @@ type Props = {
 };
 
 type State = {
-  songStatus: SongStatuses;
   isExpanded: boolean;
   isBeingCut: boolean;
   isBeingEdited: boolean;
@@ -32,7 +26,6 @@ class SongRow extends Component<Props, State> {
     super(props);
 
     this.state = {
-      songStatus: SongStatuses.Original,
       isExpanded: false,
       isBeingCut: false,
       isBeingEdited: false,
@@ -43,7 +36,9 @@ class SongRow extends Component<Props, State> {
   }
 
   handleClickEditTags = () => {
-    this.setState((prev) => ({ isBeingEdited: !prev.isBeingEdited }));
+    this.setState((prev: State) => ({
+      isBeingEdited: !prev.isBeingEdited,
+    }));
   }
 
   handleClickDownloadSong = () => {
@@ -56,7 +51,6 @@ class SongRow extends Component<Props, State> {
       this.setState({
         editableSong,
         originalSong: editableSong.clone(),
-        songStatus: SongStatuses.Saved,
       });
     };
     reader.onerror = (err) => {
@@ -67,7 +61,7 @@ class SongRow extends Component<Props, State> {
   }
 
   handleClickCutDuration = () => {
-    this.setState((prev) => ({
+    this.setState((prev: State) => ({
       isBeingCut: !prev.isBeingCut,
     }));
   }
@@ -100,14 +94,19 @@ class SongRow extends Component<Props, State> {
 
       this.setState({
         editableSong,
-        songStatus: originalSong.equals(editableSong) ? SongStatuses.Original : SongStatuses.Modified,
       });
     };
     reader.readAsArrayBuffer(file);
   }
 
   render() {
-    const { file, originalSong, editableSong, songStatus, isBeingCut, isBeingEdited } = this.state;
+    const {
+      file,
+      originalSong,
+      editableSong,
+      isBeingCut,
+      isBeingEdited,
+    } = this.state;
 
     return (
       <div className="row align-items-center">
