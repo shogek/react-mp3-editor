@@ -15,7 +15,6 @@ import AudioPlayer from '../AudioPlayer/AudioPlayer';
 type Props = {
   file: File;
   song: Song;
-  handleSongRemove: Function;
 };
 
 type State = {
@@ -41,10 +40,6 @@ class SongRow extends Component<Props, State> {
       originalSong: props.song,
       editableSong: props.song.clone(),
     };
-  }
-
-  handleClickRemoveFromList = () => {
-    this.props.handleSongRemove(this.state.file.name);
   }
 
   handleClickEditTags = () => {
@@ -126,7 +121,6 @@ class SongRow extends Component<Props, State> {
                 editableSong={editableSong}
                 onClickCut={this.handleClickCutDuration}
                 onClickEdit={this.handleClickEditTags}
-                onClickRemove={this.handleClickRemoveFromList}
                 onClickDownload={this.handleClickDownloadSong}
                 isCuttingEnabled={isBeingCut}
                 isEditingEnabled={isBeingEdited}

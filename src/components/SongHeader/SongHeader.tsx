@@ -10,7 +10,6 @@ type Props = {
   editableSong: Song;
   onClickCut: Function;
   onClickEdit: Function;
-  onClickRemove: Function;
   onClickDownload: Function;
   isCuttingEnabled: boolean;
   isEditingEnabled: boolean;
@@ -23,7 +22,6 @@ export default function songHeader(props: Props) {
     editableSong,
     onClickCut,
     onClickEdit,
-    onClickRemove,
     onClickDownload,
     isCuttingEnabled,
     isEditingEnabled,
@@ -64,11 +62,11 @@ export default function songHeader(props: Props) {
       <div className="col-1">
 
         {/* Remove song from list */}
-        <div className="row" onClick={() => onClickRemove()}>
+        {/* <div className="row" onClick={() => onClickRemove()}>
           <Tippy content="Remove the song from list" arrow={true} placement="right" delay={400}>
             <i className="fas fa-times mzt-btn-actions"></i>
           </Tippy>
-        </div>
+        </div> */}
 
         {/* Edit the song's tags */}
         <div className="row" onClick={() => onClickEdit()}>
