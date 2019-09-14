@@ -72,6 +72,17 @@ class SongRow extends Component<Props, State> {
     });
   }
 
+  handleClickCancelChanges = () => {
+    const {
+      originalSong,
+      editableSong,
+    } = this.state;
+
+    this.setState({
+      editableSong: originalSong.copyTo(editableSong),
+    });
+  }
+
   onAlbumCoverUploaded = (e: ChangeEvent<HTMLInputElement>) => {
     // No file selected
     if (!e.target.files || e.target.files.length < 1) {
@@ -134,8 +145,10 @@ class SongRow extends Component<Props, State> {
               {isBeingEdited &&
                 <TagEditor
                   originalSong={editableSong}
-                  handleSaveChanges={this.onSongSave}
-                  handleCoverUpload={this.onAlbumCoverUploaded} />
+                  onSaveChanges={this.onSongSave}
+                  onCoverUpload={this.onAlbumCoverUploaded}
+                  onCancelChanges={this.handleClickCancelChanges}
+                />
               }
             </div>
           </div>

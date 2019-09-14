@@ -42,4 +42,28 @@ export default class Song {
     const coverClone = cover ? new AlbumCover(cover.format, cover.dataAsArrayBuffer) : undefined;
     return new Song(this.artist, this.title, this.album, this.year, coverClone);
   }
+
+  /**
+   * Copies values from the origin song to the 'other' song.
+   *
+   * @param other Song to which to copy over values.
+   * @returns Song with copied over values.
+   */
+  public copyTo(other: Song): Song {
+    other.artist = this.artist;
+    other.title = this.title;
+    other.album = this.album;
+    other.year = this.year;
+
+    if (!this.albumCover) {
+      other.albumCover = undefined;
+    } else if (other.albumCover) {
+      this.albumCover.copyTo(other.albumCover);
+    } else {
+      const cover = this.albumCover;
+      other.albumCover = new AlbumCover(cover.format, cover.dataAsArrayBuffer);
+    }
+
+    return other;
+  }
 }
