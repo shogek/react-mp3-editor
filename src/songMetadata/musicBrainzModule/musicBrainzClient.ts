@@ -98,7 +98,6 @@ class MusicBrainzClient {
         limit?: number,
         offset?: number,
     ) {
-        // https://musicbrainz.org/ws/2/recording?query=You%20Need%20Me%20AND%20artist=Ed%20sheeran&fmt=json&offset=0&limit=5
 
         const endpoint = `${
             this.apiEndpoint
