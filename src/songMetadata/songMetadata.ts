@@ -8,7 +8,8 @@ import {
 
 export interface ISongMetadataMatchedResult {
     title: string;
-    artists: string;
+    artists: string[];
+    artistsDisplayName: string;
     date: string;
     album: string;
     disambiguation: string;
@@ -33,7 +34,7 @@ class SongMetadata {
         artistName?: string,
     ): Promise<ISongMetadataMatchedResult[]> {
         // Initialize criteria to search by.
-        const searchFor: SearchReleasesCriteria = [];
+        const searchFor: SearchReleasesCriteria[] = [];
         searchFor.push({
             field: SearchReleasesFields.recordingName,
             value: songName,
@@ -128,6 +129,12 @@ class SongMetadata {
         const result: ISongMetadataMatchedResult = {
             title: recording.title,
             artists: !recording['artist-credit']
+                ? []
+                : recording['artist-credit']
+                    .map((value) => {
+                        return (value.name ? value.name : value.artist.name)
+                    }),
+            artistsDisplayName: !recording['artist-credit']
                 ? ''
                 : recording['artist-credit']
                       .map((value) => {
