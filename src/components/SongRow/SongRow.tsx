@@ -110,7 +110,7 @@ class SongRow extends Component<Props, State> {
     reader.onerror = (e) => { debugger; };
     reader.onload = () => {
       const coverArrayBuffer = reader.result as ArrayBuffer;
-      const { originalSong, editableSong } = this.state;
+      const { editableSong } = this.state;
 
       if (editableSong.albumCover) {
         editableSong.albumCover.setCover(coverArrayBuffer);

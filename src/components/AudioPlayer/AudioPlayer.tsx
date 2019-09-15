@@ -163,12 +163,6 @@ class AudioPlayer extends Component<Props, State> {
 
     // Recreate region from last know valid positions
     const newRegion = this.recreateRegion(waveSurfer, cutStart, cutEnd);
-    // waveSurfer.clearRegions();
-    // const newRegion = waveSurfer.addRegion({
-    //   start: cutStart,
-    //   end: cutEnd,
-    //   color: this.REGION_COLOR,
-    // });
 
     if (isPlaying) {
       newRegion.play();
