@@ -13,12 +13,21 @@ type Props = {
 };
 
 type State = {
-  isExpanded: boolean;
-  isBeingCut: boolean;
-  isBeingEdited: boolean;
   file: File;
   originalSong: Song;
   editableSong: Song;
+  /**
+   * Marks whether the song cutter menu is expanded.
+   */
+  isBeingCut: boolean;
+  /**
+   * Marks whether the tag editor menu is expanded.
+   */
+  isBeingEdited: boolean;
+  /**
+   * 'true' if the song was cut or tags updated.
+   */
+  wereChangesSaved: boolean;
 };
 
 class SongRow extends Component<Props, State> {
@@ -26,10 +35,10 @@ class SongRow extends Component<Props, State> {
     super(props);
 
     this.state = {
-      isExpanded: false,
+      file: props.file,
       isBeingCut: false,
       isBeingEdited: false,
-      file: props.file,
+      wereChangesSaved: false,
       originalSong: props.song,
       editableSong: props.song.clone(),
     };
@@ -42,7 +51,11 @@ class SongRow extends Component<Props, State> {
   }
 
   handleClickDownloadSong = () => {
-    const { file, editableSong } = this.state;
+    const {
+      file,
+      editableSong,
+      originalSong,
+    } = this.state;
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -50,7 +63,7 @@ class SongRow extends Component<Props, State> {
       SongHelper.downloadSong(arrayBuffer, editableSong, file.name);
       this.setState({
         editableSong,
-        originalSong: editableSong.clone(),
+        originalSong: editableSong.copyTo(originalSong),
       });
     };
     reader.onerror = (err) => {
@@ -67,8 +80,10 @@ class SongRow extends Component<Props, State> {
   }
 
   onSongSave = (newSong: Song) => {
+    const { editableSong } = this.state;
     this.setState({
-      originalSong: newSong,
+      editableSong: newSong.copyTo(editableSong),
+      wereChangesSaved: true,
     });
   }
 
@@ -117,6 +132,7 @@ class SongRow extends Component<Props, State> {
       editableSong,
       isBeingCut,
       isBeingEdited,
+      wereChangesSaved,
     } = this.state;
 
     return (
@@ -134,6 +150,7 @@ class SongRow extends Component<Props, State> {
                 onClickDownload={this.handleClickDownloadSong}
                 isCuttingEnabled={isBeingCut}
                 isEditingEnabled={isBeingEdited}
+                isDownloadEnabled={wereChangesSaved}
               />
 
               {isBeingCut &&

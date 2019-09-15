@@ -3,6 +3,12 @@
   "rules": {
     "import-name": false,
     "max-line-length": [true, 144],
-    "prefer-array-literal": false
+    "prefer-array-literal": false,
+    "typedef": [
+      true,
+      "parameter",
+      "property-declaration",
+      "member-variable-declaration"
+    ]
   }
 }

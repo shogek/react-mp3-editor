@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap');
 
 .mzt-song-wrapper {
-  margin-bottom: 2%;
+  margin-bottom: 1%;
 }
 
 .mzt-col-song-header {
@@ -34,9 +34,30 @@
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 }
+.mzt-btn-actions.success {
+  background: -webkit-gradient(linear, left top, left bottom, from(rgb(62, 214, 248)), to( rgb(0, 240, 132)));
+  background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+.mzt-btn-actions.error {
+  background: -webkit-gradient(linear, left top, left bottom, from(#FFE53B), to( #ff2565));
+  background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
 
 .img-thumbnail {
   border-style: none;
   height: 15vh;
   padding: 0;
+}
+
+i.disabled {
+  color: #8080805e;
+}
+
+i.disabled:hover {
+  color: #8080805e;
+  cursor: default;
 }

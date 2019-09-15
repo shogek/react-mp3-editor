@@ -13,25 +13,52 @@ type Props = {
   fileToPlay: File;
 };
 type State = {
+  /**
+   * Is the song currently playing.
+   */
   isPlaying: boolean;
+  /**
+   * Start time of the region to cut.
+   */
   cutStart: number;
+  /**
+   * Original start time of the region (used when user presses 'Cancel')
+   */
+  originalCutStart: number;
+  /**
+   * End time of the region to cut.
+   */
   cutEnd: number;
+  /**
+   * Original end time of the region (used when user presses 'Cancel')
+   */
+  originalCutEnd: number;
+  /**
+   * The main library for displaying the audio wave.
+   */
   waveSurfer?: WaveSurfer;
+  /**
+   * Marks whether the regions were moved.
+   */
+  wasRegionChanged: boolean;
 };
 
 class AudioPlayer extends Component<Props, State> {
   /**
    * Used when recreating a region in case of error.
    */
-  private readonly REGION_COLOR = 'rgba(0, 123, 255, 0.48)';
+  private readonly REGION_COLOR: string = 'rgba(0, 123, 255, 0.48)';
 
   constructor(props: Props) {
     super(props);
 
     this.state = {
       isPlaying: false,
-      cutStart: 0,
-      cutEnd: 1,
+      originalCutStart: NaN,
+      originalCutEnd: NaN,
+      cutStart: NaN,
+      cutEnd: NaN,
+      wasRegionChanged: false,
     };
   }
 
@@ -112,6 +139,8 @@ class AudioPlayer extends Component<Props, State> {
       waveSurfer,
       cutStart,
       cutEnd,
+      originalCutStart: cutStart,
+      originalCutEnd: cutEnd,
     });
   }
 
@@ -119,7 +148,7 @@ class AudioPlayer extends Component<Props, State> {
    * Called when the draggable area has been moved.
    * Recreate region if starting end overlaps the ending.
    */
-  onCropRegionUpdated = (params) => {
+  onCropRegionUpdated = (params: any) => {
     const { start, end } = params;
     const { cutStart, cutEnd, waveSurfer, isPlaying } = this.state;
 
@@ -127,18 +156,19 @@ class AudioPlayer extends Component<Props, State> {
       return;
     }
 
-        // Check if one end of the region was dragged over the other one
+    // Check if one end of the region was dragged over the other one
     if (Math.abs(start - end) > 0.25) {
       return;
     }
 
-        // Recreate region from last know valid positions
-    waveSurfer.clearRegions();
-    const newRegion = waveSurfer.addRegion({
-      start: cutStart,
-      end: cutEnd,
-      color: this.REGION_COLOR,
-    });
+    // Recreate region from last know valid positions
+    const newRegion = this.recreateRegion(waveSurfer, cutStart, cutEnd);
+    // waveSurfer.clearRegions();
+    // const newRegion = waveSurfer.addRegion({
+    //   start: cutStart,
+    //   end: cutEnd,
+    //   color: this.REGION_COLOR,
+    // });
 
     if (isPlaying) {
       newRegion.play();
@@ -150,10 +180,24 @@ class AudioPlayer extends Component<Props, State> {
   }
 
   /**
+   * Recreate the region to given time stamps.
+   * @returns The newly created region.
+   */
+  recreateRegion = (waveSurfer: WaveSurfer, startTime: number, endTime: number) : WaveSurfer => {
+    waveSurfer.clearRegions();
+
+    return waveSurfer.addRegion({
+      start: startTime,
+      end: endTime,
+      color: this.REGION_COLOR,
+    });
+  }
+
+  /**
    * Called when the draggable area has finished moving (any dragging stopped).
    * Update the cut's start and end times.
    */
-  onCropRegionUpdateEnd = (params) => {
+  onCropRegionUpdateEnd = (params: any) => {
     const { start, end } = params;
     const { cutStart, cutEnd, waveSurfer } = this.state;
 
@@ -180,8 +224,10 @@ class AudioPlayer extends Component<Props, State> {
     }
 
     waveSurfer.play(playFrom);
+
     this.setState({
       isPlaying: true,
+      wasRegionChanged: playFrom !== 0,
     });
   }
 
@@ -250,15 +296,47 @@ class AudioPlayer extends Component<Props, State> {
       this.setState({ isPlaying: false });
     } else {
       waveSurfer.stop();
-            // If the song isn't playing - don't start it
+      // If the song isn't playing - don't start it
       if (isPlaying) {
         waveSurfer.play();
       }
     }
   }
 
+  handleClickCut = () => {
+    alert('Not yet implemented :(');
+  }
+
+  /**
+   * Recreate the initial region.
+   */
+  handleClickCancel = () => {
+    const {
+      waveSurfer,
+      originalCutStart,
+      originalCutEnd,
+    } = this.state;
+
+    if (!waveSurfer) return;
+
+    this.recreateRegion(waveSurfer, originalCutStart, originalCutEnd);
+    waveSurfer.stop();
+
+    this.setState({
+      waveSurfer,
+      isPlaying: false,
+      cutStart: originalCutStart,
+      cutEnd: originalCutEnd,
+      wasRegionChanged: false,
+    });
+  }
+
   render() {
-    const { waveSurfer, isPlaying } = this.state;
+    const {
+      waveSurfer,
+      isPlaying,
+      wasRegionChanged,
+    } = this.state;
     const isLoading = waveSurfer ? false : true;
     const toggleIcon = `fas fa-${isPlaying ? 'pause' : 'play'} mzt-btn-actions`;
     const tooltip = isPlaying ? 'Pause' : 'Play';
@@ -285,8 +363,10 @@ class AudioPlayer extends Component<Props, State> {
               {/* Cut the song */}
               <div className="col-1" >
                 <Tippy content="Cut the song to selected region" arrow={true} placement="bottom" delay={400} >
-                  <i className="fas fa-cut mzt-btn-actions"
-                    onClick={() => this.handleClickJump(false)} />
+                  <i
+                    className={`fas fa-cut mzt-btn-actions ${wasRegionChanged ? 'success' : 'disabled'}`}
+                    {...(wasRegionChanged ? { onClick: this.handleClickCut } : {})}
+                  />
                 </Tippy>
               </div>
 
@@ -333,8 +413,10 @@ class AudioPlayer extends Component<Props, State> {
               {/* Recreate initial region */}
               <div className="col-1" >
                 <Tippy content="Cancel" arrow={true} placement="bottom" delay={400} >
-                  <i className="fas fa-ban mzt-btn-actions"
-                    onClick={() => this.handleClickJump(false)} />
+                <i
+                  className={`fas fa-ban mzt-btn-actions ${wasRegionChanged ? 'error' : 'disabled'}`}
+                  {...(wasRegionChanged ? { onClick: this.handleClickCancel } : {})}
+                />
                 </Tippy>
               </div>
             </div> {/* END OF [BUTTONS] ROW */}

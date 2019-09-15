@@ -13,6 +13,7 @@ type Props = {
   onClickDownload: Function;
   isCuttingEnabled: boolean;
   isEditingEnabled: boolean;
+  isDownloadEnabled: boolean;
 };
 
 export default function songHeader(props: Props) {
@@ -25,6 +26,7 @@ export default function songHeader(props: Props) {
     onClickDownload,
     isCuttingEnabled,
     isEditingEnabled,
+    isDownloadEnabled,
   } = props;
   const title = `${song.title || '<NO TITLE>'} by ${song.artist || '<NO ARTIST>'}`;
 
@@ -82,13 +84,12 @@ export default function songHeader(props: Props) {
           </Tippy>
         </div>
 
-        {/* // TODO: Allow download when song edited in some way */}
         {/* Download song */}
-        {/* <div className='row' onClick={() => handleClickDownload()}>
-          <Tippy content='Download the song' arrow={true} placement='right' delay={400}>
-            <i className="fas fa-download mzt-btn-actions"></i>
+        <div className="row" {...(isDownloadEnabled ? { onClick: () => onClickDownload() } : {})}>
+          <Tippy content="Download the song" arrow={true} placement="right" delay={400}>
+            <i className={`fas fa-download mzt-btn-actions ${isDownloadEnabled ? 'success' : 'disabled'}`}></i>
           </Tippy>
-        </div> */}
+        </div>
       </div>
     </div>
   );
