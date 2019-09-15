@@ -5,61 +5,92 @@ import DefaultCover from './cover_350x350.png';
 import './song-header.css';
 
 type Props = {
-    file: File;
-    song: Song;
-    editableSong: Song;
-    handleClickDownload: Function;
-    handleClickExpand: Function;
-    handleClickRemove: Function;
+  file: File;
+  song: Song;
+  editableSong: Song;
+  onClickCut: Function;
+  onClickEdit: Function;
+  onClickDownload: Function;
+  isCuttingEnabled: boolean;
+  isEditingEnabled: boolean;
+  isDownloadEnabled: boolean;
 };
 
-function SongHeader(props: Props) {
-    const { file, song, editableSong, handleClickDownload, handleClickExpand, handleClickRemove } = props;
-    const title = `${song.title || '<NO TITLE>'} by ${song.artist || '<NO ARTIST>'}`;
+export default function songHeader(props: Props) {
+  const {
+    file,
+    song,
+    editableSong,
+    onClickCut,
+    onClickEdit,
+    onClickDownload,
+    isCuttingEnabled,
+    isEditingEnabled,
+    isDownloadEnabled,
+  } = props;
+  const title = `${song.title || '<NO TITLE>'} by ${song.artist || '<NO ARTIST>'}`;
 
-    return (
-        <div className='row align-items-center mzt-song-wrapper'>
-            <div className='col-auto'>
-                <img
-                    id='yo'
-                    className='img-thumbnail'
-                    alt='album cover'
-                    src={editableSong.albumCover ? editableSong.albumCover.dataAsTagSrc : DefaultCover} />
-            </div>
+  return (
+    <div className="row align-items-center mzt-song-wrapper">
 
-            <div className='col mzt-col-song-header' onClick={() => handleClickExpand()}>
-                <div className='row'>
-                    <div className='col'>
-                        <h3>
-                            <span className='mzt-song-filename'>{file.name}</span>
-                        </h3>
-                    </div>
-                </div>
+      {/* [IMAGE] Album cover */}
+      <div className="col-auto">
+        <img className="img-thumbnail"
+          alt="album cover"
+          src={editableSong.albumCover ? editableSong.albumCover.dataAsTagSrc : DefaultCover} />
+      </div>
 
-                <div className='row'>
-                    <div className='col'>
-                        <h4>
-                            <span className='mzt-song-title'>{title}</span>
-                        </h4>
-                    </div>
-                </div>
-            </div>
-
-            <div className='col-1'>
-                {/* Remove song from list */}
-                <div className='row' title='Remove song from list' onClick={() => handleClickRemove()}>
-                    <i className="fas fa-times mzt-btn-actions"></i>
-                </div>
-
-                {/* Download song */}
-                <div className='row' onClick={() => handleClickDownload()}>
-                    <Tippy content='Download the song' arrow={true} placement='right' delay={400}>
-                        <i className="fas fa-download mzt-btn-actions"></i>
-                    </Tippy>
-                </div>
-            </div>
+      {/* [TEXT] File name */}
+      <div className="col mzt-col-song-header">
+        <div className="row">
+          <div className="col">
+            <h3>
+              <span className="mzt-song-filename">{file.name}</span>
+            </h3>
+          </div>
         </div>
-    );
-}
 
-export default SongHeader;
+        {/* [TEXT] Parsed title */}
+        <div className="row">
+          <div className="col">
+            <h4>
+              <span className="mzt-song-title">{title}</span>
+            </h4>
+          </div>
+        </div>
+      </div>
+
+      {/* [BUTTONS] */}
+      <div className="col-1">
+
+        {/* Remove song from list */}
+        {/* <div className="row" onClick={() => onClickRemove()}>
+          <Tippy content="Remove the song from list" arrow={true} placement="right" delay={400}>
+            <i className="fas fa-times mzt-btn-actions"></i>
+          </Tippy>
+        </div> */}
+
+        {/* Edit the song's tags */}
+        <div className="row" onClick={() => onClickEdit()}>
+          <Tippy content="Edit the song's tags" arrow={true} placement="right" delay={400}>
+            <i className={`fas fa-pencil-alt mzt-btn-actions ${isEditingEnabled ? 'active' : ''}`}></i>
+          </Tippy>
+        </div>
+
+        {/* Cut the song */}
+        <div className="row" onClick={() => onClickCut()}>
+          <Tippy content="Cut the song" arrow={true} placement="right" delay={400}>
+            <i className={`fas fa-cut mzt-btn-actions ${isCuttingEnabled ? 'active' : ''}`}></i>
+          </Tippy>
+        </div>
+
+        {/* Download song */}
+        <div className="row" {...(isDownloadEnabled ? { onClick: () => onClickDownload() } : {})}>
+          <Tippy content="Download the song" arrow={true} placement="right" delay={400}>
+            <i className={`fas fa-download mzt-btn-actions ${isDownloadEnabled ? 'success' : 'disabled'}`}></i>
+          </Tippy>
+        </div>
+      </div>
+    </div>
+  );
+}
