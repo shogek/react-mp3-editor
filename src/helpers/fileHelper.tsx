@@ -16,10 +16,7 @@ export default class FileHelper {
                     onSuccess: (tags: any) => {
                         const { artist, title, album, year, /*genre, trackNo,*/ picture } = tags.tags;
 
-                        const cover = !picture
-                            ? undefined
-                            : new AlbumCover(picture.format, picture.data, picture.description, picture.type);
-
+                        const cover = picture ? new AlbumCover(picture.format, picture.data) : undefined;
                         const song = new Song(artist, title, album, year, cover);
                         const fileSelection = new FileSelection(file, song);
                         resolve(fileSelection);

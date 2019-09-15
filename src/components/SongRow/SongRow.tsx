@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ChangeEvent } from 'react';
 
 import Song from '../../models/song';
 import SongHelper from '../../helpers/songHelper';
@@ -9,6 +9,8 @@ import SongDetails from '../SongDetails/SongDetails';
 
 import { SongStatuses } from '../SongStatus/songStatuses';
 import "./song-row.css";
+import AlbumCover from '../../models/albumCover';
+import AudioPlayer from '../AudioPlayer/AudioPlayer';
 
 type Props = {
     file: File;
@@ -33,7 +35,7 @@ class SongRow extends Component<Props, State> {
             isExpanded: false,
             file: props.file,
             originalSong: props.song,
-            editableSong: SongHelper.getCopyOfSong(props.song)
+            editableSong: props.song.clone()
         };
 
         this.onSongRemove = this.onSongRemove.bind(this);
@@ -43,12 +45,13 @@ class SongRow extends Component<Props, State> {
     }
 
     onSongEdited(updatedSong: Song, updatedField: string, updatedValue: any) {
+        const { originalSong } = this.state;
         const key = Object.keys(updatedField)[0];
         updatedSong[key] = updatedValue;
-        const songStatus = SongHelper.areSongsDifferent(this.state.originalSong, updatedSong)
-            ? SongStatuses.Modified
-            : SongStatuses.Original;
-        this.setState({ editableSong: updatedSong, songStatus });
+        this.setState({
+            editableSong: updatedSong,
+            songStatus: originalSong.equals(updatedSong) ? SongStatuses.Original : SongStatuses.Modified
+        });
     }
 
     onSongRemove() {
@@ -66,7 +69,11 @@ class SongRow extends Component<Props, State> {
         reader.onload = () => {
             const arrayBuffer = reader.result as ArrayBuffer;
             SongHelper.downloadSong(arrayBuffer, editableSong, file.name);
-            this.setState({ originalSong: SongHelper.getCopyOfSong(editableSong), editableSong, songStatus: SongStatuses.Saved });
+            this.setState({
+                originalSong: editableSong.clone(),
+                editableSong,
+                songStatus: SongStatuses.Saved
+            });
         };
         reader.onerror = (err) => {
             console.log(err);
@@ -75,8 +82,34 @@ class SongRow extends Component<Props, State> {
         reader.readAsArrayBuffer(this.state.file);
     }
 
+    onAlbumCoverUploaded = (e: ChangeEvent<HTMLInputElement>) => {
+        // No file selected
+        if (!e.target.files || e.target.files.length < 1)
+            return;
+
+        const file = e.target.files[0];
+
+        const reader = new FileReader();
+        reader.onerror = (e) => { debugger; };
+        reader.onload = () => {
+            const coverArrayBuffer = reader.result as ArrayBuffer;
+            const { originalSong, editableSong } = this.state;
+
+            if (editableSong.albumCover)
+                editableSong.albumCover.setCover(coverArrayBuffer);
+            else
+                editableSong.albumCover = new AlbumCover(file.type, coverArrayBuffer);
+
+            this.setState({
+                editableSong,
+                songStatus: originalSong.equals(editableSong) ? SongStatuses.Original : SongStatuses.Modified
+            });
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
     render() {
-        const { originalSong, editableSong, songStatus, isExpanded } = this.state;
+        const { file, originalSong, editableSong, songStatus, isExpanded } = this.state;
 
         return (
             <div className='row align-items-center'>
@@ -88,16 +121,24 @@ class SongRow extends Component<Props, State> {
                     <div className='row mzt-row-song'>
                         <div className='col'>
                             <SongHeader
+                                file={file}
                                 song={originalSong}
+                                editableSong={editableSong}
                                 handleClickDownload={this.onSongDownload}
                                 handleClickExpand={this.onSongExpand}
                                 handleClickRemove={this.onSongRemove} />
 
+                            {isExpanded &&
+                                <AudioPlayer
+                                    fileToPlay={file}
+                                    songToPlay={originalSong} />
+                            }
 
                             {isExpanded &&
                                 <SongDetails
                                     originalSong={editableSong}
-                                    handleSongEdit={this.onSongEdited} />
+                                    handleSongEdit={this.onSongEdited}
+                                    handleCoverUpload={this.onAlbumCoverUploaded} />
                             }
                         </div>
                     </div>

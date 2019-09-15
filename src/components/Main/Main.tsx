@@ -1,5 +1,4 @@
 // TODO: Show warning when choosing new songs again
-// TODO: Album cover disappears on download
 
 import React, { Component } from 'react';
 import SongRow from '../SongRow/SongRow';
@@ -66,6 +65,8 @@ class Main extends Component<Props, State> {
         }
     }
 
+
+
     render() {
         const { uploadedFiles, songsToProcess, songsProcessed } = this.state;
         const isLoading = songsToProcess !== songsProcessed && songsToProcess > 0;
@@ -78,7 +79,6 @@ class Main extends Component<Props, State> {
                         : <FileInput onFilesSelected={this.handleFilesSelected} />
                 }
 
-                {/* Song rows */}
                 {uploadedFiles.map(u => <SongRow key={u.file.name} file={u.file} song={u.song} handleSongRemove={this.handleSongRemove} />)}
             </div>
         );
