@@ -1,6 +1,6 @@
 /**
  * ----------------------------------------------
- * Tried searching for alredy existing packages for this.
+ * Tried searching for already existing packages for this.
  * Investigation notes:
  * - https://www.npmjs.com/package/musicbrainz-api
  *     Looks promising, although...
@@ -59,11 +59,11 @@ export enum SearchReleasesFields {
 export type SearchReleasesCriteria = {
     field: SearchReleasesFields;
     value: string;
-}[];
+};
 
 class MusicBrainzUrlHelper {
     public static getSearchReleasesQuery<T>(
-        searchFields: SearchReleasesCriteria,
+        searchFields: SearchReleasesCriteria[],
     ): string {
         return `?query=${searchFields.map((f) => {
             return `${f.field}:"${encodeURIComponent(f.value)}"`;
@@ -89,21 +89,18 @@ class MusicBrainzUrlHelper {
 class MusicBrainzClient {
     private apiEndpoint = 'https://musicbrainz.org/ws/2/';
     /**
-     * @param searchFor query parameters to search for.
+     * @param searchForCriteria query parameters to search for.
      * @param limit how many entries should be returned. Only values between 1 and 100 (both inclusive) are allowed. If not given, this defaults to 25.
      * @param offset search results starting at a given offset. Used for paging through more than one page of results.
      */
     public async searchReleases(
-        searchFor: SearchReleasesCriteria,
+        searchForCriteria: SearchReleasesCriteria[],
         limit?: number,
         offset?: number,
-    ) {
-
-        const endpoint = `${
-            this.apiEndpoint
-        }recording${MusicBrainzUrlHelper.getSearchReleasesQuery(
-            searchFor,
-        )}${MusicBrainzUrlHelper.getGeneralQueryString(offset, limit)}`;
+    ): Promise<SearchRecordingsResult> {
+        const searchForQuery = MusicBrainzUrlHelper.getSearchReleasesQuery(searchForCriteria);
+        const generalQueryString = MusicBrainzUrlHelper.getGeneralQueryString(offset, limit);
+        const endpoint = `${this.apiEndpoint}recording${searchForQuery}${generalQueryString}`;
 
         const response = await fetch(endpoint, {
             method: 'GET',
