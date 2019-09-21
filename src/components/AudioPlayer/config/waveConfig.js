@@ -5,8 +5,6 @@ export default {
   barGap: 2,
   // Measured in pixels.
   cursorWidth: 0,
-  // The fill color of the cursor indicating the playhead position.
-  // cursorColor: '#232526',
   // The fill color of the waveform after the cursor.
   waveColor: '#d0d0d0', // 'disabled button' gray
   // The fill color of the part of the waveform behind the cursor. 
