@@ -4,9 +4,9 @@ export default {
   // The optional spacing between bars of the wave, if not provided will be calculated in legacy format.
   barGap: 2,
   // Measured in pixels.
-  cursorWidth: 2,
+  cursorWidth: 0,
   // The fill color of the cursor indicating the playhead position.
-  cursorColor: '#232526',
+  // cursorColor: '#232526',
   // The fill color of the waveform after the cursor.
   waveColor: '#525353',
   // The fill color of the part of the waveform behind the cursor. 
