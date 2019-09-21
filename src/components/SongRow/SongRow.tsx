@@ -1,4 +1,5 @@
 import React, { Component, ChangeEvent } from 'react';
+import { Encoder, Decoder, BufferManipulations } from 'alamp';
 import Song from '../../models/song';
 import SongHelper from '../../helpers/songHelper';
 import SongHeader from '../SongHeader/SongHeader';
@@ -44,7 +45,7 @@ class SongRow extends Component<Props, State> {
     };
   }
 
-  handleClickEditTags = () => {
+  handleToggleEditMode = () => {
     this.setState((prev: State) => ({
       isBeingEdited: !prev.isBeingEdited,
     }));
@@ -73,7 +74,7 @@ class SongRow extends Component<Props, State> {
     reader.readAsArrayBuffer(this.state.file);
   }
 
-  handleClickCutDuration = () => {
+  handleToggleCutMode = () => {
     this.setState((prev: State) => ({
       isBeingCut: !prev.isBeingCut,
     }));
@@ -96,6 +97,23 @@ class SongRow extends Component<Props, State> {
     this.setState({
       editableSong: originalSong.copyTo(editableSong),
     });
+  }
+
+  handleCutSong = async (cutStart: number, cutEnd: number) => {
+    const {
+      file,
+      editableSong,
+    } = this.state;
+    const decoder = new Decoder();
+    const buffer = await decoder.decodeFile(file);
+    const manipulator = await new BufferManipulations(buffer);
+    manipulator.cut(cutStart * 1000, cutEnd * 1000);
+    const processedBuffer = await manipulator.apply();
+
+    const encoder = new Encoder();
+    const blob = await encoder.encodeToMP3Blob(processedBuffer, 196);
+    const arrayBuffer = await new Response(blob).arrayBuffer();
+    // SongHelper.downloadSong(arrayBuffer, editableSong, file.name);
   }
 
   onAlbumCoverUploaded = (e: ChangeEvent<HTMLInputElement>) => {
@@ -145,8 +163,8 @@ class SongRow extends Component<Props, State> {
                 file={file}
                 song={originalSong}
                 editableSong={editableSong}
-                onClickCut={this.handleClickCutDuration}
-                onClickEdit={this.handleClickEditTags}
+                onToggleCutMode={this.handleToggleCutMode}
+                onToggleEditMode={this.handleToggleEditMode}
                 onClickDownload={this.handleClickDownloadSong}
                 isCuttingEnabled={isBeingCut}
                 isEditingEnabled={isBeingEdited}
@@ -156,7 +174,9 @@ class SongRow extends Component<Props, State> {
               {isBeingCut &&
                 <AudioPlayer
                   fileToPlay={file}
-                  songToPlay={originalSong} />
+                  songToPlay={originalSong}
+                  onCut={this.handleCutSong}
+                />
               }
 
               {isBeingEdited &&

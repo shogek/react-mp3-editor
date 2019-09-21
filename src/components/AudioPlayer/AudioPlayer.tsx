@@ -13,6 +13,7 @@ import './audio-player.css';
 type Props = {
   songToPlay: Song;
   fileToPlay: File;
+  onCut: Function;
 };
 type State = {
   /**
@@ -254,7 +255,22 @@ export default class AudioPlayer extends Component<Props, State> {
   }
 
   handleClickCut = () => {
-    alert('Not yet implemented :(');
+    debugger;
+    const {
+      waveSurfer,
+      isPlaying,
+      cutStart,
+      cutEnd,
+    } = this.state;
+    if (!waveSurfer) return;
+
+    if (isPlaying) {
+      waveSurfer.stop();
+      this.setState({
+        isPlaying: false,
+      });
+    }
+    this.props.onCut(cutStart, cutEnd);
   }
 
   /**

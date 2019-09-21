@@ -8,8 +8,8 @@ type Props = {
   file: File;
   song: Song;
   editableSong: Song;
-  onClickCut: Function;
-  onClickEdit: Function;
+  onToggleCutMode: Function;
+  onToggleEditMode: Function;
   onClickDownload: Function;
   isCuttingEnabled: boolean;
   isEditingEnabled: boolean;
@@ -21,8 +21,8 @@ export default function songHeader(props: Props) {
     file,
     song,
     editableSong,
-    onClickCut,
-    onClickEdit,
+    onToggleCutMode,
+    onToggleEditMode,
     onClickDownload,
     isCuttingEnabled,
     isEditingEnabled,
@@ -71,14 +71,14 @@ export default function songHeader(props: Props) {
         </div> */}
 
         {/* Edit the song's tags */}
-        <div className="row" onClick={() => onClickEdit()}>
+        <div className="row" onClick={() => onToggleEditMode()}>
           <Tippy content="Edit the song's tags" arrow={true} placement="right" delay={400}>
             <i className={`fas fa-pencil-alt mzt-btn-actions ${isEditingEnabled ? 'active' : ''}`}></i>
           </Tippy>
         </div>
 
         {/* Cut the song */}
-        <div className="row" onClick={() => onClickCut()}>
+        <div className="row" onClick={() => onToggleCutMode()}>
           <Tippy content="Cut the song" arrow={true} placement="right" delay={400}>
             <i className={`fas fa-cut mzt-btn-actions ${isCuttingEnabled ? 'active' : ''}`}></i>
           </Tippy>
