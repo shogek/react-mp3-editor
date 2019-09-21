@@ -229,22 +229,6 @@ export default class AudioPlayer extends Component<Props, State> {
   }
 
   /**
-   * Skip the playback forwards or backwards by 5 seconds.
-   */
-  handleClickSkip = (skipForwards: boolean = true) => {
-    const { waveSurfer } = this.state;
-    if (!waveSurfer) {
-      return;
-    }
-
-    if (skipForwards) {
-      waveSurfer.skipForward();
-    } else {
-      waveSurfer.skipBackward();
-    }
-  }
-
-  /**
    * Jump the playback to the beginning/end of the song.
    */
   handleClickJump = (jumpToEnd: boolean = true) => {
@@ -324,7 +308,7 @@ export default class AudioPlayer extends Component<Props, State> {
               </div>
             </div>
 
-            {/* [BUTTONS] Playback */}
+            {/* [BUTTONS] */}
             <div className="row justify-content-center">
               {/* Cut the song */}
               <div className="col-1" >
@@ -344,27 +328,11 @@ export default class AudioPlayer extends Component<Props, State> {
                 </Tippy>
               </div>
 
-              {/* Rewind 5 seconds */}
-              <div className="col-1">
-                <Tippy content="Rewind 5 seconds" arrow={true} placement="bottom" delay={400} >
-                  <i className="fas fa-chevron-left mzt-btn-actions"
-                    onClick={() => this.handleClickSkip(false)} />
-                </Tippy>
-              </div>
-
               {/* Play/pause the song */}
               <div className="col-1">
                 <Tippy content={tooltip} arrow={true} placement="bottom" delay={400} >
                   <i className={toggleIcon}
                     onClick={() => this.handleClickTogglePlay()} />
-                </Tippy>
-              </div>
-
-              {/* Fast forward 5 seconds */}
-              <div className="col-1" >
-                <Tippy content="Fast forward 5 seconds" arrow={true} placement="bottom" delay={400} >
-                  <i className="fas fa-chevron-right mzt-btn-actions"
-                    onClick={() => this.handleClickSkip(true)} />
                 </Tippy>
               </div>
 
