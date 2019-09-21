@@ -3,6 +3,8 @@ export default {
   barWidth: 2,
   // The optional spacing between bars of the wave, if not provided will be calculated in legacy format.
   barGap: 2,
+  // Whether to hide the horizontal scrollbar when one would normally be shown.
+  hideScrollbar: true,
   // Measured in pixels.
   cursorWidth: 0,
   // The fill color of the waveform after the cursor.
