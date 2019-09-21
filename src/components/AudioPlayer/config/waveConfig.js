@@ -1,4 +1,8 @@
 export default {
+  // If specified, draws the waveform in bar mode.
+  barWidth: 2,
+  // The optional spacing between bars of the wave, if not provided will be calculated in legacy format.
+  barGap: 2,
   // Measured in pixels.
   cursorWidth: 2,
   // The fill color of the cursor indicating the playhead position.
