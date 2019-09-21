@@ -161,6 +161,30 @@ export default class AudioPlayer extends Component<Props, State> {
   }
 
   /**
+   * Called when the region has finished moving (drag/expand/shrink).
+   */
+  onCropRegionUpdateEnd = (params: any) => {
+    const regionStart = params.start;
+    const regionEnd = params.end;
+    const {
+      isPlaying,
+      waveSurfer,
+    } = this.state;
+
+    if (!waveSurfer) return;
+
+    if (isPlaying) {
+      waveSurfer.play(regionStart);
+    }
+
+    this.setState({
+      cutStart: regionStart,
+      cutEnd: regionEnd,
+      wasRegionChanged: true,
+    });
+  }
+
+  /**
    * Recreate the region to given time stamps.
    * @returns The newly created region.
    */
@@ -175,56 +199,21 @@ export default class AudioPlayer extends Component<Props, State> {
   }
 
   /**
-   * Called when the draggable area has finished moving (any dragging stopped).
-   * Update the cut's start and end times.
-   */
-  onCropRegionUpdateEnd = (params: any) => {
-    const { start, end } = params;
-    const { cutStart, cutEnd, waveSurfer } = this.state;
-
-    if (!waveSurfer) {
-      return;
-    }
-
-    let playFrom = 0;
-
-    // The ending region was moved
-    if (end !== cutEnd) {
-      playFrom = end;
-      this.setState({
-        cutEnd: end,
-      });
-    }
-
-    // The starting region was moved
-    if (start !== cutStart) {
-      playFrom = start;
-      this.setState({
-        cutStart: start,
-      });
-    }
-
-    waveSurfer.play(playFrom);
-
-    this.setState({
-      isPlaying: true,
-      wasRegionChanged: playFrom !== 0,
-    });
-  }
-
-  /**
    * Play or pause the audio playback.
    */
   handleClickTogglePlay = () => {
-    const { waveSurfer, isPlaying } = this.state;
-    if (!waveSurfer) {
-      return;
-    }
+    const {
+      waveSurfer,
+      isPlaying,
+      cutStart,
+    } = this.state;
+
+    if (!waveSurfer) return;
 
     if (isPlaying) {
       waveSurfer.pause();
     } else {
-      waveSurfer.play();
+      waveSurfer.play(cutStart);
     }
 
     this.setState({ isPlaying: !isPlaying });
