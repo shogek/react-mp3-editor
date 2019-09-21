@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import LoadingOverlay from 'react-loading-overlay';
 import Tippy from '@tippy.js/react';
 import Song from '../../models/song';
@@ -67,9 +68,13 @@ export default class AudioPlayer extends Component<Props, State> {
   componentDidMount() {
     const { fileToPlay } = this.props;
 
+    // Get the specific DOM element for storing the wave visualization
+    const componentDiv = ReactDOM.findDOMNode(this) as HTMLElement;
+    const waveformDiv = componentDiv.getElementsByClassName('waveform')[0] as HTMLElement;
+
     const waveSurfer = WaveSurfer.create({
       // Get the specific DOM element for storing the wave visualization
-      container: document.getElementById(this.WAVEFORM_CONTAINER) as HTMLElement,
+      container: waveformDiv,
       ...waveConfig,
       plugins: [
         // Add a vertical cursor on the wave form when the mouse hovers over it
@@ -311,7 +316,7 @@ export default class AudioPlayer extends Component<Props, State> {
             {/* The waveform */}
             <div className="row">
               <div className="col">
-                <div id={this.WAVEFORM_CONTAINER}/>
+                <div className={this.WAVEFORM_CONTAINER}/>
               </div>
             </div>
 
