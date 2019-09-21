@@ -174,12 +174,17 @@ export default class AudioPlayer extends Component<Props, State> {
     const {
       isPlaying,
       waveSurfer,
+      cutStart,
     } = this.state;
 
     if (!waveSurfer) return;
 
     if (isPlaying) {
-      waveSurfer.play(regionStart);
+      if (regionStart !== cutStart) {
+        waveSurfer.play(regionStart);
+      } else {
+        waveSurfer.play(regionEnd);
+      }
     }
 
     this.setState({
@@ -210,7 +215,6 @@ export default class AudioPlayer extends Component<Props, State> {
     const {
       waveSurfer,
       isPlaying,
-      cutStart,
     } = this.state;
 
     if (!waveSurfer) return;
@@ -218,7 +222,7 @@ export default class AudioPlayer extends Component<Props, State> {
     if (isPlaying) {
       waveSurfer.pause();
     } else {
-      waveSurfer.play(cutStart);
+      waveSurfer.play();
     }
 
     this.setState({ isPlaying: !isPlaying });
