@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import LoadingOverlay from 'react-loading-overlay';
 import Tippy from '@tippy.js/react';
 import Song from '../../models/song';
+import waveConfig from './config/waveConfig';
 import WaveSurfer from 'wavesurfer.js';
+import cursorConfig from './config/cursorConfig';
 import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 import './audio-player.css';
@@ -74,33 +76,10 @@ class AudioPlayer extends Component<Props, State> {
 
     const waveSurfer = WaveSurfer.create({
       container: waveformDiv,
-      backend: 'WebAudio',
-      cursorWidth: 2,
-      cursorColor: '#232526',
-      waveColor: '#525353',
-      progressColor: '#232526',
-      skipLength: 5,
+      ...waveConfig,
       plugins: [
         // Add a vertical cursor on the wave form when the mouse hovers over it
-        CursorPlugin.create({
-          customStyle: {
-            // the cursor doesn't center to the mouse so we shift it
-            'margin-left': '13.5px',
-          },
-          color: 'white',
-          // hide cursor when mouse leaves the wave
-          hideOnBlur: true,
-          width: '2px',
-          showTime: true,
-          opacity: '1',
-          customShowTimeStyle: {
-            opacity: 1,
-            'margin-left': '5px',
-            padding: '1px 7px 3px 7px',
-            'border-radius': '0.2em',
-            'background-color': 'white',
-          },
-        }),
+        CursorPlugin.create({ ...cursorConfig }),
         // Initialize the plugin that adds a dragable region over the waveform
         RegionsPlugin.create(),
       ],
