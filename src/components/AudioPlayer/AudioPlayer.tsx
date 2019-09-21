@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import LoadingOverlay from 'react-loading-overlay';
 import Tippy from '@tippy.js/react';
 import Song from '../../models/song';
@@ -45,10 +44,8 @@ type State = {
   wasRegionChanged: boolean;
 };
 
-class AudioPlayer extends Component<Props, State> {
-  /**
-   * Used when recreating a region in case of error.
-   */
+export default class AudioPlayer extends Component<Props, State> {
+  private readonly WAVEFORM_CONTAINER: string = 'waveform';
   private readonly REGION_COLOR: string = 'rgba(0, 123, 255, 0.48)';
 
   constructor(props: Props) {
@@ -70,12 +67,9 @@ class AudioPlayer extends Component<Props, State> {
   componentDidMount() {
     const { fileToPlay } = this.props;
 
-    // Get the specific DOM element for storing the wave visualization
-    const componentDiv = ReactDOM.findDOMNode(this) as HTMLElement;
-    const waveformDiv = componentDiv.getElementsByClassName('waveform')[0] as HTMLElement;
-
     const waveSurfer = WaveSurfer.create({
-      container: waveformDiv,
+      // Get the specific DOM element for storing the wave visualization
+      container: document.getElementById(this.WAVEFORM_CONTAINER) as HTMLElement,
       ...waveConfig,
       plugins: [
         // Add a vertical cursor on the wave form when the mouse hovers over it
@@ -88,13 +82,21 @@ class AudioPlayer extends Component<Props, State> {
     waveSurfer.loadBlob(fileToPlay);
   }
 
+  componentWillUnmount = () => {
+    const { waveSurfer } = this.state;
+    if (!waveSurfer) return;
+
+    waveSurfer.destroy();
+  }
+
   /**
    * Start listening to region events.
    * Draw the region itself.
    */
   onWaveSurferReady = (waveSurfer: WaveSurfer) => {
-    waveSurfer.on('region-update-end', this.onCropRegionUpdateEnd);
+    waveSurfer.on('region-created', this.onCropRegionCreated);
     waveSurfer.on('region-updated', this.onCropRegionUpdated);
+    waveSurfer.on('region-update-end', this.onCropRegionUpdateEnd);
 
     let cutStart: number;
     let cutEnd: number;
@@ -123,6 +125,11 @@ class AudioPlayer extends Component<Props, State> {
     });
   }
 
+  onCropRegionCreated = (params: any) => {
+    // Remove region's 'title' attribute showing the region's duration.
+    params.element.attributes.title.value = '';
+  }
+
   /**
    * Called when the draggable area has been moved.
    * Recreate region if starting end overlaps the ending.
@@ -131,9 +138,10 @@ class AudioPlayer extends Component<Props, State> {
     const { start, end } = params;
     const { cutStart, cutEnd, waveSurfer, isPlaying } = this.state;
 
-    if (!waveSurfer) {
-      return;
-    }
+    if (!waveSurfer) return;
+
+    // Remove region's 'title' attribute showing the region's duration.
+    params.element.attributes.title.value = '';
 
     // Check if one end of the region was dragged over the other one
     if (Math.abs(start - end) > 0.25) {
@@ -202,19 +210,6 @@ class AudioPlayer extends Component<Props, State> {
       isPlaying: true,
       wasRegionChanged: playFrom !== 0,
     });
-  }
-
-  /**
-   * Stop audio playback.
-   */
-  componentWillUnmount = () => {
-    const { waveSurfer } = this.state;
-
-    if (!waveSurfer) {
-      return;
-    }
-
-    waveSurfer.destroy();
   }
 
   /**
@@ -327,7 +322,7 @@ class AudioPlayer extends Component<Props, State> {
             {/* The waveform */}
             <div className="row">
               <div className="col">
-                <div className="waveform" />
+                <div id={this.WAVEFORM_CONTAINER}/>
               </div>
             </div>
 
@@ -400,5 +395,3 @@ class AudioPlayer extends Component<Props, State> {
     );
   }
 }
-
-export default AudioPlayer;
