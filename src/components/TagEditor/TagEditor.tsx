@@ -6,7 +6,7 @@ import './tag-editor.css';
 type Props = {
   originalSong: Song;
   onSaveChanges: Function;
-  onCoverUpload: Function;
+  onUploadCover: Function;
   onCancelChanges: Function;
 };
 type State = {
@@ -64,7 +64,7 @@ class TagEditor extends Component<Props, State> {
   render() {
     const { title, artist, album, year } = this.state.editableSong;
     const { wasSongEdited } = this.state;
-    const { onCoverUpload } = this.props;
+    const { onUploadCover } = this.props;
 
     return (
       <div className="row mzt-row-details">
@@ -143,7 +143,7 @@ class TagEditor extends Component<Props, State> {
                 className="mzt-invisible"
                 type="file"
                 accept=".png,.jpg,.jpeg"
-                onChange={e => onCoverUpload(e)} />
+                onChange={e => onUploadCover(e)} />
 
               {/* Visible */}
               <div onClick={handleInputClicked}>

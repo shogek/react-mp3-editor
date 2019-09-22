@@ -12,7 +12,7 @@ import './audio-player.css';
 
 type Props = {
   songToPlay: Song;
-  fileToPlay: File;
+  blobToPlay: Blob;
   onCut: Function;
 };
 type State = {
@@ -67,7 +67,7 @@ export default class AudioPlayer extends Component<Props, State> {
    * Generate and show the audio wave.
    */
   componentDidMount() {
-    const { fileToPlay } = this.props;
+    const { blobToPlay } = this.props;
 
     // Get the specific DOM element for storing the wave visualization
     const componentDiv = ReactDOM.findDOMNode(this) as HTMLElement;
@@ -85,7 +85,8 @@ export default class AudioPlayer extends Component<Props, State> {
       ],
     });
     waveSurfer.on('ready', () => this.onWaveSurferReady(waveSurfer));
-    waveSurfer.loadBlob(fileToPlay);
+    waveSurfer.on('finish', () => this.onSongFinishedPlaying());
+    waveSurfer.loadBlob(blobToPlay);
   }
 
   componentWillUnmount = () => {
@@ -209,6 +210,12 @@ export default class AudioPlayer extends Component<Props, State> {
     });
   }
 
+  onSongFinishedPlaying = () => {
+    this.setState({
+      isPlaying: false,
+    });
+  }
+
   /**
    * Play or pause the audio playback.
    */
@@ -255,7 +262,6 @@ export default class AudioPlayer extends Component<Props, State> {
   }
 
   handleClickCut = () => {
-    debugger;
     const {
       waveSurfer,
       isPlaying,

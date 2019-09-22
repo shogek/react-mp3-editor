@@ -63,13 +63,6 @@ export default function songHeader(props: Props) {
       {/* [BUTTONS] */}
       <div className="col-1">
 
-        {/* Remove song from list */}
-        {/* <div className="row" onClick={() => onClickRemove()}>
-          <Tippy content="Remove the song from list" arrow={true} placement="right" delay={400}>
-            <i className="fas fa-times mzt-btn-actions"></i>
-          </Tippy>
-        </div> */}
-
         {/* Edit the song's tags */}
         <div className="row" onClick={() => onToggleEditMode()}>
           <Tippy content="Edit the song's tags" arrow={true} placement="right" delay={400}>
@@ -85,9 +78,9 @@ export default function songHeader(props: Props) {
         </div>
 
         {/* Download song */}
-        <div className="row" {...(isDownloadEnabled ? { onClick: () => onClickDownload() } : {})}>
+        <div className="row" onClick={() => onClickDownload()}>
           <Tippy content="Download the song" arrow={true} placement="right" delay={400}>
-            <i className={`fas fa-download mzt-btn-actions ${isDownloadEnabled ? 'success' : 'disabled'}`}></i>
+            <i className="fas fa-download mzt-btn-actions"></i>
           </Tippy>
         </div>
       </div>

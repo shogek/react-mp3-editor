@@ -14,21 +14,18 @@ type Props = {
 };
 
 type State = {
+  blob?: Blob;
   file: File;
   originalSong: Song;
   editableSong: Song;
-  /**
-   * Marks whether the song cutter menu is expanded.
-   */
-  isBeingCut: boolean;
-  /**
-   * Marks whether the tag editor menu is expanded.
-   */
-  isBeingEdited: boolean;
-  /**
-   * 'true' if the song was cut or tags updated.
-   */
+  /** Is the song cutter menu is expanded. */
+  isCutModeEnabled: boolean;
+  /** Is the tag editor menu is expanded. */
+  isEditModeEnabled: boolean;
+  /** 'true' if the song was cut or tags updated. */
   wereChangesSaved: boolean;
+  /** Is the song currently being processed. */
+  isBeingCut: boolean;
 };
 
 class SongRow extends Component<Props, State> {
@@ -36,9 +33,11 @@ class SongRow extends Component<Props, State> {
     super(props);
 
     this.state = {
-      file: props.file,
       isBeingCut: false,
-      isBeingEdited: false,
+      blob: undefined,
+      file: props.file,
+      isCutModeEnabled: false,
+      isEditModeEnabled: false,
       wereChangesSaved: false,
       originalSong: props.song,
       editableSong: props.song.clone(),
@@ -47,16 +46,23 @@ class SongRow extends Component<Props, State> {
 
   handleToggleEditMode = () => {
     this.setState((prev: State) => ({
-      isBeingEdited: !prev.isBeingEdited,
+      isEditModeEnabled: !prev.isEditModeEnabled,
     }));
   }
 
-  handleClickDownloadSong = () => {
+  handleClickDownloadSong = async () => {
     const {
+      blob,
       file,
       editableSong,
       originalSong,
     } = this.state;
+
+    if (blob) {
+      const arrayBuffer = await new Response(blob).arrayBuffer();
+      SongHelper.downloadSong(arrayBuffer, editableSong, file.name);
+      return;
+    }
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -76,7 +82,7 @@ class SongRow extends Component<Props, State> {
 
   handleToggleCutMode = () => {
     this.setState((prev: State) => ({
-      isBeingCut: !prev.isBeingCut,
+      isCutModeEnabled: !prev.isCutModeEnabled,
     }));
   }
 
@@ -102,8 +108,11 @@ class SongRow extends Component<Props, State> {
   handleCutSong = async (cutStart: number, cutEnd: number) => {
     const {
       file,
-      editableSong,
     } = this.state;
+
+    this.setState({
+      isBeingCut: true,
+    });
     const decoder = new Decoder();
     const buffer = await decoder.decodeFile(file);
     const manipulator = await new BufferManipulations(buffer);
@@ -111,9 +120,11 @@ class SongRow extends Component<Props, State> {
     const processedBuffer = await manipulator.apply();
 
     const encoder = new Encoder();
-    const blob = await encoder.encodeToMP3Blob(processedBuffer, 196);
-    const arrayBuffer = await new Response(blob).arrayBuffer();
-    // SongHelper.downloadSong(arrayBuffer, editableSong, file.name);
+    const blob = await encoder.encodeToMP3Blob(processedBuffer, 192);
+    this.setState({
+      blob,
+      isBeingCut: false,
+    });
   }
 
   onAlbumCoverUploaded = (e: ChangeEvent<HTMLInputElement>) => {
@@ -145,11 +156,13 @@ class SongRow extends Component<Props, State> {
 
   render() {
     const {
+      blob,
       file,
       originalSong,
       editableSong,
+      isCutModeEnabled,
+      isEditModeEnabled,
       isBeingCut,
-      isBeingEdited,
       wereChangesSaved,
     } = this.state;
 
@@ -166,24 +179,24 @@ class SongRow extends Component<Props, State> {
                 onToggleCutMode={this.handleToggleCutMode}
                 onToggleEditMode={this.handleToggleEditMode}
                 onClickDownload={this.handleClickDownloadSong}
-                isCuttingEnabled={isBeingCut}
-                isEditingEnabled={isBeingEdited}
+                isCuttingEnabled={isCutModeEnabled}
+                isEditingEnabled={isEditModeEnabled}
                 isDownloadEnabled={wereChangesSaved}
               />
 
-              {isBeingCut &&
+              {isCutModeEnabled && !isBeingCut &&
                 <AudioPlayer
-                  fileToPlay={file}
+                  blobToPlay={blob || file}
                   songToPlay={originalSong}
                   onCut={this.handleCutSong}
                 />
               }
 
-              {isBeingEdited &&
+              {isEditModeEnabled &&
                 <TagEditor
                   originalSong={editableSong}
                   onSaveChanges={this.onSongSave}
-                  onCoverUpload={this.onAlbumCoverUploaded}
+                  onUploadCover={this.onAlbumCoverUploaded}
                   onCancelChanges={this.handleClickCancelChanges}
                 />
               }
