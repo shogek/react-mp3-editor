@@ -127,31 +127,13 @@ class SongRow extends Component<Props, State> {
     });
   }
 
-  onAlbumCoverUploaded = (e: ChangeEvent<HTMLInputElement>) => {
-    // No file selected
-    if (!e.target.files || e.target.files.length < 1) {
-      return;
-    }
-
-    const file = e.target.files[0];
-
-    const reader = new FileReader();
-    reader.onerror = (e) => { debugger; };
-    reader.onload = () => {
-      const coverArrayBuffer = reader.result as ArrayBuffer;
-      const { editableSong } = this.state;
-
-      if (editableSong.albumCover) {
-        editableSong.albumCover.setCover(coverArrayBuffer);
-      } else {
-        editableSong.albumCover = new AlbumCover(file.type, coverArrayBuffer);
-      }
-
-      this.setState({
-        editableSong,
-      });
-    };
-    reader.readAsArrayBuffer(file);
+  /**
+   * @param song Editable song with the new album cover.
+   */
+  onAlbumCoverUploaded = (song: Song) => {
+    this.setState({
+      editableSong: song,
+    });
   }
 
   render() {
