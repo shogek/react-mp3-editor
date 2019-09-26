@@ -30,7 +30,7 @@ export default function songHeader(props: Props) {
     isEditingEnabled,
   } = props;
 
-  const parsedHeading = song.title && song.artist ? `${song.title} - ${song.artist}` : '';
+  const parsedHeading = song.title && song.artist ? `${song.artist} - ${song.title}` : '';
 
   return (
     <div className="row align-items-center mzt-song-wrapper">

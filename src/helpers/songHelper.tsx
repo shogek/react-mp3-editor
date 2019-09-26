@@ -24,9 +24,9 @@ export default class SongHelper {
 
     if (song.albumCover) {
       writer.setFrame('APIC', {
-        type: 3, // Cover (front)
+        type: 0, // (Other) because my MP3 player only supports this one
         data: song.albumCover.dataAsArrayBuffer,
-        description: 'Album cover',
+        description: '',
         useUnicodeEncoding: false,
       });
     }

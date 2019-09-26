@@ -171,7 +171,7 @@ class TagEditor extends Component<Props, State> {
               <input id="btn-upload-cover"
                 className="mzt-invisible"
                 type="file"
-                accept=".png,.jpg,.jpeg"
+                accept=".jpg,.jpeg"
                 onChange={(e) => this.handleUploadCover(e)} />
 
               {/* Visible */}
