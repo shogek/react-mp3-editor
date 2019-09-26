@@ -4,9 +4,9 @@ import Song from '../../models/song';
 import SongHelper from '../../helpers/songHelper';
 import SongHeader from '../SongHeader/SongHeader';
 import TagEditor from '../TagEditor/TagEditor';
-import AlbumCover from '../../models/albumCover';
 import AudioPlayer from '../AudioPlayer/AudioPlayer';
 import './song-row.css';
+import AlbumCover from '../../models/albumCover';
 
 type Props = {
   file: File;
@@ -16,6 +16,8 @@ type Props = {
 type State = {
   blob?: Blob;
   file: File;
+  /** Workaround because 'SongHeader' needs information from 'TagEditor' */
+  albumCover?: AlbumCover;
   originalSong: Song;
   editableSong: Song;
   /** Is the song cutter menu is expanded. */
@@ -39,6 +41,7 @@ class SongRow extends Component<Props, State> {
       isCutModeEnabled: false,
       isEditModeEnabled: false,
       wereChangesSaved: false,
+      albumCover: props.song.albumCover,
       originalSong: props.song,
       editableSong: props.song.clone(),
     };
@@ -102,6 +105,7 @@ class SongRow extends Component<Props, State> {
 
     this.setState({
       editableSong: originalSong.copyTo(editableSong),
+      albumCover: originalSong.albumCover,
     });
   }
 
@@ -130,9 +134,9 @@ class SongRow extends Component<Props, State> {
   /**
    * @param song Editable song with the new album cover.
    */
-  onAlbumCoverUploaded = (song: Song) => {
+  onAlbumCoverUploaded = (newCover: AlbumCover) => {
     this.setState({
-      editableSong: song,
+      albumCover: newCover,
     });
   }
 
@@ -140,6 +144,7 @@ class SongRow extends Component<Props, State> {
     const {
       blob,
       file,
+      albumCover,
       originalSong,
       editableSong,
       isCutModeEnabled,
@@ -157,6 +162,7 @@ class SongRow extends Component<Props, State> {
               <SongHeader
                 file={file}
                 song={originalSong}
+                albumCover={albumCover}
                 editableSong={editableSong}
                 onToggleCutMode={this.handleToggleCutMode}
                 onToggleEditMode={this.handleToggleEditMode}

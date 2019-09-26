@@ -17,7 +17,6 @@ type State = {
 
 // TODO: Show unsaved changes on modified fields.
 function handleInputClicked() {
-  // TODO: set nodeValue to empty string.
   const input = document.getElementById('btn-upload-cover');
   if (input) {
     input.click();
@@ -70,7 +69,7 @@ class TagEditor extends Component<Props, State> {
         wasSongEdited: !originalSong.equals(editableSong),
       });
 
-      this.props.onUploadCover(editableSong);
+      this.props.onUploadCover(editableSong.albumCover);
     };
     reader.readAsArrayBuffer(file);
   }
@@ -89,12 +88,12 @@ class TagEditor extends Component<Props, State> {
       editableSong: originalSong.copyTo(editableSong),
       wasSongEdited: false,
     });
+    this.props.onCancelChanges();
   }
 
   render() {
     const { title, artist, album, year } = this.state.editableSong;
     const { wasSongEdited } = this.state;
-    const { onUploadCover } = this.props;
 
     return (
       <div className="row mzt-row-details">

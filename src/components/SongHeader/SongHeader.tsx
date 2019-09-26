@@ -2,11 +2,13 @@ import React from 'react';
 import Tippy from '@tippy.js/react';
 import Song from '../../models/song';
 import DefaultCover from './cover_350x350.png';
+import AlbumCover from '../../models/albumCover';
 import './song-header.css';
 
 type Props = {
   file: File;
   song: Song;
+  albumCover?: AlbumCover,
   editableSong: Song;
   onToggleCutMode: Function;
   onToggleEditMode: Function;
@@ -20,6 +22,7 @@ export default function songHeader(props: Props) {
   const {
     file,
     song,
+    albumCover,
     editableSong,
     onToggleCutMode,
     onToggleEditMode,
@@ -37,7 +40,7 @@ export default function songHeader(props: Props) {
       <div className="col-auto">
         <img className="img-thumbnail"
           alt="album cover"
-          src={editableSong.albumCover ? editableSong.albumCover.dataAsTagSrc : DefaultCover} />
+          src={albumCover ? albumCover.dataAsTagSrc : DefaultCover} />
       </div>
 
       {/* [TEXT] File name */}
