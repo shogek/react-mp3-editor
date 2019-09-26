@@ -1,4 +1,5 @@
 import React, { Component, ChangeEvent } from 'react';
+import ReactDOM from 'react-dom';
 import Tippy from '@tippy.js/react';
 import Song from '../../models/song';
 import AlbumCover from '../../models/albumCover';
@@ -15,14 +16,6 @@ type State = {
   wasSongEdited: boolean;
 };
 
-// TODO: Show unsaved changes on modified fields.
-function handleInputClicked() {
-  const input = document.getElementById('btn-upload-cover');
-  if (input) {
-    input.click();
-  }
-}
-
 class TagEditor extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -32,6 +25,17 @@ class TagEditor extends Component<Props, State> {
       editableSong: originalSong.clone(),
       wasSongEdited: false,
     };
+  }
+
+  // TODO: Show unsaved changes on modified fields.
+  handleInputClicked = () => {
+    // Get the specific DOM 'input' element for cover upload
+    const componentDiv = ReactDOM.findDOMNode(this) as HTMLElement;
+    const inputElement = componentDiv.getElementsByClassName('btn-upload-cover')[0] as HTMLElement;
+
+    if (inputElement) {
+      inputElement.click();
+    }
   }
 
   handleSongEdit = (updatedField: string, updatedValue: any) => {
@@ -168,14 +172,14 @@ class TagEditor extends Component<Props, State> {
             {/* Upload new album cover */}
             <div className="col-1">
               {/* Hidden */}
-              <input id="btn-upload-cover"
-                className="mzt-invisible"
+              <input
+                className="btn-upload-cover mzt-invisible"
                 type="file"
                 accept=".jpg,.jpeg"
                 onChange={(e) => this.handleUploadCover(e)} />
 
               {/* Visible */}
-              <div onClick={handleInputClicked}>
+              <div onClick={this.handleInputClicked}>
                 <Tippy content="Upload new album cover" arrow={true} placement="bottom" delay={400}>
                   <i className="fas fa-file-image mzt-btn-actions"></i>
                 </Tippy>
