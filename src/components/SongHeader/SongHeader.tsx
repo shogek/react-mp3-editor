@@ -23,15 +23,14 @@ export default function songHeader(props: Props) {
     file,
     song,
     albumCover,
-    editableSong,
     onToggleCutMode,
     onToggleEditMode,
     onClickDownload,
     isCuttingEnabled,
     isEditingEnabled,
-    isDownloadEnabled,
   } = props;
-  const title = `${song.title || '<NO TITLE>'} by ${song.artist || '<NO ARTIST>'}`;
+
+  const parsedHeading = song.title && song.artist ? `${song.title} - ${song.artist}` : '';
 
   return (
     <div className="row align-items-center mzt-song-wrapper">
@@ -53,14 +52,17 @@ export default function songHeader(props: Props) {
           </div>
         </div>
 
-        {/* [TEXT] Parsed title */}
-        <div className="row">
-          <div className="col">
-            <h4>
-              <span className="mzt-song-title">{title}</span>
-            </h4>
+        {/* [TEXT] Parsed heading */}
+        {
+          parsedHeading &&
+          <div className="row">
+            <div className="col">
+              <h4>
+                <span className="mzt-song-heading">{parsedHeading}</span>
+              </h4>
+            </div>
           </div>
-        </div>
+        }
       </div>
 
       {/* [BUTTONS] */}
