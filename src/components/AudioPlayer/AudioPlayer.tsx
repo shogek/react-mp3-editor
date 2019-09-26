@@ -366,11 +366,11 @@ export default class AudioPlayer extends Component<Props, State> {
                 </Tippy>
               </div>
 
-              {/* Recreate initial region */}
+              {/* Cancel changes (recreate initial region) */}
               <div className="col-1" >
                 <Tippy content="Cancel" arrow={true} placement="bottom" delay={400} >
                 <i
-                  className={`fas fa-ban mzt-btn-actions ${wasRegionChanged ? 'error' : 'disabled'}`}
+                  className={`fas fa-ban mzt-btn-actions ${wasRegionChanged ? '' : 'disabled'}`}
                   {...(wasRegionChanged ? { onClick: this.handleClickCancel } : {})}
                 />
                 </Tippy>

@@ -186,7 +186,7 @@ class TagEditor extends Component<Props, State> {
             <div className="col-1">
               <div onClick={this.handleClickCancel}>
                 <Tippy content="Cancel changes" arrow={true} placement="bottom" delay={400}>
-                  <i className={`fas fa-ban mzt-btn-actions ${wasSongEdited ? 'error' : 'disabled'}`}></i>
+                  <i className={`fas fa-ban mzt-btn-actions ${wasSongEdited ? '' : 'disabled'}`}></i>
                 </Tippy>
               </div>
             </div>
