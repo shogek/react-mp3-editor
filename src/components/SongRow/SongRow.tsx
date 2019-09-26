@@ -1,4 +1,4 @@
-import React, { Component, ChangeEvent } from 'react';
+import React, { Component } from 'react';
 import { Encoder, Decoder, BufferManipulations } from 'alamp';
 import Song from '../../models/song';
 import SongHelper from '../../helpers/songHelper';
