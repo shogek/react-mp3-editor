@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, ChangeEvent } from 'react';
 import Tippy from '@tippy.js/react';
 import Song from '../../models/song';
+import AlbumCover from '../../models/albumCover';
 import './tag-editor.css';
 
 type Props = {
   originalSong: Song;
   onSaveChanges: Function;
-  onCoverUpload: Function;
+  onUploadCover: Function;
   onCancelChanges: Function;
 };
 type State = {
@@ -16,7 +17,6 @@ type State = {
 
 // TODO: Show unsaved changes on modified fields.
 function handleInputClicked() {
-  // TODO: set nodeValue to empty string.
   const input = document.getElementById('btn-upload-cover');
   if (input) {
     input.click();
@@ -34,7 +34,7 @@ class TagEditor extends Component<Props, State> {
     };
   }
 
-  handleSongEdited = (updatedField: string, updatedValue: any) => {
+  handleSongEdit = (updatedField: string, updatedValue: any) => {
     const { originalSong } = this.props;
     const { editableSong } = this.state;
     editableSong[updatedField] = updatedValue;
@@ -43,6 +43,35 @@ class TagEditor extends Component<Props, State> {
       editableSong,
       wasSongEdited: !originalSong.equals(editableSong),
     });
+  }
+
+  handleUploadCover = (e: ChangeEvent<HTMLInputElement>) => {
+    // No file selected
+    if (!e.target.files || e.target.files.length < 1) return;
+
+    const file = e.target.files[0];
+
+    const reader = new FileReader();
+    reader.onerror = (e) => { debugger; };
+    reader.onload = () => {
+      const coverArrayBuffer = reader.result as ArrayBuffer;
+      const { editableSong } = this.state;
+      const { originalSong } = this.props;
+
+      if (editableSong.albumCover) {
+        editableSong.albumCover.setCover(coverArrayBuffer);
+      } else {
+        editableSong.albumCover = new AlbumCover(file.type, coverArrayBuffer);
+      }
+
+      this.setState({
+        editableSong,
+        wasSongEdited: !originalSong.equals(editableSong),
+      });
+
+      this.props.onUploadCover(editableSong.albumCover);
+    };
+    reader.readAsArrayBuffer(file);
   }
 
   handleClickSaveChanges = () => {
@@ -59,12 +88,12 @@ class TagEditor extends Component<Props, State> {
       editableSong: originalSong.copyTo(editableSong),
       wasSongEdited: false,
     });
+    this.props.onCancelChanges();
   }
 
   render() {
     const { title, artist, album, year } = this.state.editableSong;
     const { wasSongEdited } = this.state;
-    const { onCoverUpload } = this.props;
 
     return (
       <div className="row mzt-row-details">
@@ -79,7 +108,7 @@ class TagEditor extends Component<Props, State> {
                     <label htmlFor="mzt-input-title">Title</label>
                     <input id="mzt-input-title" type="text" className="form-control"
                       value={title}
-                      onChange={e => this.handleSongEdited('title', e.target.value)} />
+                      onChange={e => this.handleSongEdit('title', e.target.value)} />
                   </div>
                 </div>
               </div>
@@ -91,7 +120,7 @@ class TagEditor extends Component<Props, State> {
                     <label htmlFor="mzt-input-artist">Artist</label>
                     <input id="mzt-input-artist" type="text" className="form-control"
                       value={artist}
-                      onChange={e => this.handleSongEdited('artist', e.target.value)} />
+                      onChange={e => this.handleSongEdit('artist', e.target.value)} />
                   </div>
                 </div>
               </div>
@@ -105,7 +134,7 @@ class TagEditor extends Component<Props, State> {
                     <label htmlFor="mzt-input-album">Album</label>
                     <input id="mzt-input-album" type="text" className="form-control"
                       value={album}
-                      onChange={e => this.handleSongEdited('album', e.target.value)} />
+                      onChange={e => this.handleSongEdit('album', e.target.value)} />
                   </div>
                 </div>
               </div>
@@ -117,7 +146,7 @@ class TagEditor extends Component<Props, State> {
                     <label htmlFor="mzt-input-year">Year</label>
                     <input id="mzt-input-year" type="number" className="form-control"
                       value={year}
-                      onChange={e => this.handleSongEdited('year', e.target.value)} />
+                      onChange={e => this.handleSongEdit('year', e.target.value)} />
                   </div>
                 </div>
               </div>
@@ -142,8 +171,8 @@ class TagEditor extends Component<Props, State> {
               <input id="btn-upload-cover"
                 className="mzt-invisible"
                 type="file"
-                accept=".png,.jpg,.jpeg"
-                onChange={e => onCoverUpload(e)} />
+                accept=".jpg,.jpeg"
+                onChange={(e) => this.handleUploadCover(e)} />
 
               {/* Visible */}
               <div onClick={handleInputClicked}>
@@ -157,7 +186,7 @@ class TagEditor extends Component<Props, State> {
             <div className="col-1">
               <div onClick={this.handleClickCancel}>
                 <Tippy content="Cancel changes" arrow={true} placement="bottom" delay={400}>
-                  <i className={`fas fa-ban mzt-btn-actions ${wasSongEdited ? 'error' : 'disabled'}`}></i>
+                  <i className={`fas fa-ban mzt-btn-actions ${wasSongEdited ? '' : 'disabled'}`}></i>
                 </Tippy>
               </div>
             </div>

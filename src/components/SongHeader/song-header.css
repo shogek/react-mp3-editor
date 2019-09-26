@@ -13,7 +13,7 @@
   font-family: 'Roboto', sans-serif;
 }
 
-.mzt-song-title {
+.mzt-song-heading {
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -36,12 +36,6 @@
 }
 .mzt-btn-actions.success {
   background: -webkit-gradient(linear, left top, left bottom, from(rgb(62, 214, 248)), to( rgb(0, 240, 132)));
-  background-clip: text;
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
-}
-.mzt-btn-actions.error {
-  background: -webkit-gradient(linear, left top, left bottom, from(#FFE53B), to( #ff2565));
   background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;

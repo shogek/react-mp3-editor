@@ -3,14 +3,17 @@ import ReactDOM from 'react-dom';
 import LoadingOverlay from 'react-loading-overlay';
 import Tippy from '@tippy.js/react';
 import Song from '../../models/song';
+import waveConfig from './config/waveConfig';
 import WaveSurfer from 'wavesurfer.js';
+import cursorConfig from './config/cursorConfig';
 import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 import './audio-player.css';
 
 type Props = {
   songToPlay: Song;
-  fileToPlay: File;
+  blobToPlay: Blob;
+  onCut: Function;
 };
 type State = {
   /**
@@ -43,10 +46,8 @@ type State = {
   wasRegionChanged: boolean;
 };
 
-class AudioPlayer extends Component<Props, State> {
-  /**
-   * Used when recreating a region in case of error.
-   */
+export default class AudioPlayer extends Component<Props, State> {
+  private readonly WAVEFORM_CONTAINER: string = 'waveform';
   private readonly REGION_COLOR: string = 'rgba(0, 123, 255, 0.48)';
 
   constructor(props: Props) {
@@ -66,47 +67,33 @@ class AudioPlayer extends Component<Props, State> {
    * Generate and show the audio wave.
    */
   componentDidMount() {
-    const { fileToPlay } = this.props;
+    const { blobToPlay } = this.props;
 
     // Get the specific DOM element for storing the wave visualization
     const componentDiv = ReactDOM.findDOMNode(this) as HTMLElement;
     const waveformDiv = componentDiv.getElementsByClassName('waveform')[0] as HTMLElement;
 
     const waveSurfer = WaveSurfer.create({
+      // Get the specific DOM element for storing the wave visualization
       container: waveformDiv,
-      backend: 'WebAudio',
-      cursorWidth: 2,
-      cursorColor: '#232526',
-      waveColor: '#525353',
-      progressColor: '#232526',
-      skipLength: 5,
+      ...waveConfig,
       plugins: [
         // Add a vertical cursor on the wave form when the mouse hovers over it
-        CursorPlugin.create({
-          customStyle: {
-            // the cursor doesn't center to the mouse so we shift it
-            'margin-left': '13.5px',
-          },
-          color: 'white',
-          // hide cursor when mouse leaves the wave
-          hideOnBlur: true,
-          width: '2px',
-          showTime: true,
-          opacity: '1',
-          customShowTimeStyle: {
-            opacity: 1,
-            'margin-left': '5px',
-            padding: '1px 7px 3px 7px',
-            'border-radius': '0.2em',
-            'background-color': 'white',
-          },
-        }),
+        CursorPlugin.create({ ...cursorConfig }),
         // Initialize the plugin that adds a dragable region over the waveform
         RegionsPlugin.create(),
       ],
     });
     waveSurfer.on('ready', () => this.onWaveSurferReady(waveSurfer));
-    waveSurfer.loadBlob(fileToPlay);
+    waveSurfer.on('finish', () => this.onSongFinishedPlaying());
+    waveSurfer.loadBlob(blobToPlay);
+  }
+
+  componentWillUnmount = () => {
+    const { waveSurfer } = this.state;
+    if (!waveSurfer) return;
+
+    waveSurfer.destroy();
   }
 
   /**
@@ -114,8 +101,9 @@ class AudioPlayer extends Component<Props, State> {
    * Draw the region itself.
    */
   onWaveSurferReady = (waveSurfer: WaveSurfer) => {
-    waveSurfer.on('region-update-end', this.onCropRegionUpdateEnd);
+    waveSurfer.on('region-created', this.onCropRegionCreated);
     waveSurfer.on('region-updated', this.onCropRegionUpdated);
+    waveSurfer.on('region-update-end', this.onCropRegionUpdateEnd);
 
     let cutStart: number;
     let cutEnd: number;
@@ -144,6 +132,11 @@ class AudioPlayer extends Component<Props, State> {
     });
   }
 
+  onCropRegionCreated = (params: any) => {
+    // Remove region's 'title' attribute showing the region's duration.
+    params.element.attributes.title.value = '';
+  }
+
   /**
    * Called when the draggable area has been moved.
    * Recreate region if starting end overlaps the ending.
@@ -152,9 +145,10 @@ class AudioPlayer extends Component<Props, State> {
     const { start, end } = params;
     const { cutStart, cutEnd, waveSurfer, isPlaying } = this.state;
 
-    if (!waveSurfer) {
-      return;
-    }
+    if (!waveSurfer) return;
+
+    // Remove region's 'title' attribute showing the region's duration.
+    params.element.attributes.title.value = '';
 
     // Check if one end of the region was dragged over the other one
     if (Math.abs(start - end) > 0.25) {
@@ -174,6 +168,35 @@ class AudioPlayer extends Component<Props, State> {
   }
 
   /**
+   * Called when the region has finished moving (drag/expand/shrink).
+   */
+  onCropRegionUpdateEnd = (params: any) => {
+    const regionStart = params.start;
+    const regionEnd = params.end;
+    const {
+      isPlaying,
+      waveSurfer,
+      cutStart,
+    } = this.state;
+
+    if (!waveSurfer) return;
+
+    if (isPlaying) {
+      if (regionStart !== cutStart) {
+        waveSurfer.play(regionStart);
+      } else {
+        waveSurfer.play(regionEnd);
+      }
+    }
+
+    this.setState({
+      cutStart: regionStart,
+      cutEnd: regionEnd,
+      wasRegionChanged: true,
+    });
+  }
+
+  /**
    * Recreate the region to given time stamps.
    * @returns The newly created region.
    */
@@ -187,65 +210,22 @@ class AudioPlayer extends Component<Props, State> {
     });
   }
 
-  /**
-   * Called when the draggable area has finished moving (any dragging stopped).
-   * Update the cut's start and end times.
-   */
-  onCropRegionUpdateEnd = (params: any) => {
-    const { start, end } = params;
-    const { cutStart, cutEnd, waveSurfer } = this.state;
-
-    if (!waveSurfer) {
-      return;
-    }
-
-    let playFrom = 0;
-
-    // The ending region was moved
-    if (end !== cutEnd) {
-      playFrom = end;
-      this.setState({
-        cutEnd: end,
-      });
-    }
-
-    // The starting region was moved
-    if (start !== cutStart) {
-      playFrom = start;
-      this.setState({
-        cutStart: start,
-      });
-    }
-
-    waveSurfer.play(playFrom);
-
+  onSongFinishedPlaying = () => {
     this.setState({
-      isPlaying: true,
-      wasRegionChanged: playFrom !== 0,
+      isPlaying: false,
     });
-  }
-
-  /**
-   * Stop audio playback.
-   */
-  componentWillUnmount = () => {
-    const { waveSurfer } = this.state;
-
-    if (!waveSurfer) {
-      return;
-    }
-
-    waveSurfer.destroy();
   }
 
   /**
    * Play or pause the audio playback.
    */
   handleClickTogglePlay = () => {
-    const { waveSurfer, isPlaying } = this.state;
-    if (!waveSurfer) {
-      return;
-    }
+    const {
+      waveSurfer,
+      isPlaying,
+    } = this.state;
+
+    if (!waveSurfer) return;
 
     if (isPlaying) {
       waveSurfer.pause();
@@ -254,22 +234,6 @@ class AudioPlayer extends Component<Props, State> {
     }
 
     this.setState({ isPlaying: !isPlaying });
-  }
-
-  /**
-   * Skip the playback forwards or backwards by 5 seconds.
-   */
-  handleClickSkip = (skipForwards: boolean = true) => {
-    const { waveSurfer } = this.state;
-    if (!waveSurfer) {
-      return;
-    }
-
-    if (skipForwards) {
-      waveSurfer.skipForward();
-    } else {
-      waveSurfer.skipBackward();
-    }
   }
 
   /**
@@ -298,7 +262,21 @@ class AudioPlayer extends Component<Props, State> {
   }
 
   handleClickCut = () => {
-    alert('Not yet implemented :(');
+    const {
+      waveSurfer,
+      isPlaying,
+      cutStart,
+      cutEnd,
+    } = this.state;
+    if (!waveSurfer) return;
+
+    if (isPlaying) {
+      waveSurfer.stop();
+      this.setState({
+        isPlaying: false,
+      });
+    }
+    this.props.onCut(cutStart, cutEnd);
   }
 
   /**
@@ -348,11 +326,11 @@ class AudioPlayer extends Component<Props, State> {
             {/* The waveform */}
             <div className="row">
               <div className="col">
-                <div className="waveform" />
+                <div className={this.WAVEFORM_CONTAINER}/>
               </div>
             </div>
 
-            {/* [BUTTONS] Playback */}
+            {/* [BUTTONS] */}
             <div className="row justify-content-center">
               {/* Cut the song */}
               <div className="col-1" >
@@ -372,27 +350,11 @@ class AudioPlayer extends Component<Props, State> {
                 </Tippy>
               </div>
 
-              {/* Rewind 5 seconds */}
-              <div className="col-1">
-                <Tippy content="Rewind 5 seconds" arrow={true} placement="bottom" delay={400} >
-                  <i className="fas fa-chevron-left mzt-btn-actions"
-                    onClick={() => this.handleClickSkip(false)} />
-                </Tippy>
-              </div>
-
               {/* Play/pause the song */}
               <div className="col-1">
                 <Tippy content={tooltip} arrow={true} placement="bottom" delay={400} >
                   <i className={toggleIcon}
                     onClick={() => this.handleClickTogglePlay()} />
-                </Tippy>
-              </div>
-
-              {/* Fast forward 5 seconds */}
-              <div className="col-1" >
-                <Tippy content="Fast forward 5 seconds" arrow={true} placement="bottom" delay={400} >
-                  <i className="fas fa-chevron-right mzt-btn-actions"
-                    onClick={() => this.handleClickSkip(true)} />
                 </Tippy>
               </div>
 
@@ -404,11 +366,11 @@ class AudioPlayer extends Component<Props, State> {
                 </Tippy>
               </div>
 
-              {/* Recreate initial region */}
+              {/* Cancel changes (recreate initial region) */}
               <div className="col-1" >
                 <Tippy content="Cancel" arrow={true} placement="bottom" delay={400} >
                 <i
-                  className={`fas fa-ban mzt-btn-actions ${wasRegionChanged ? 'error' : 'disabled'}`}
+                  className={`fas fa-ban mzt-btn-actions ${wasRegionChanged ? '' : 'disabled'}`}
                   {...(wasRegionChanged ? { onClick: this.handleClickCancel } : {})}
                 />
                 </Tippy>
@@ -421,5 +383,3 @@ class AudioPlayer extends Component<Props, State> {
     );
   }
 }
-
-export default AudioPlayer;

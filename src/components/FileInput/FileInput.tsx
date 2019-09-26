@@ -7,7 +7,7 @@ type Props = {
 type State = {};
 
 class FileInput extends Component<Props, State> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     this.onFilesSelected = this.onFilesSelected.bind(this);

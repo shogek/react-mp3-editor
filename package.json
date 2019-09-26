@@ -9,6 +9,7 @@
     "@types/react": "16.8.19",
     "@types/react-dom": "16.8.4",
     "@types/wavesurfer.js": "^2.0.2",
+    "alamp": "^0.1.4",
     "audio": "github:audiojs/audio",
     "browser-id3-writer": "^4.1.0",
     "file-saver": "^2.0.2",
