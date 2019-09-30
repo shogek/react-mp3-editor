@@ -24,7 +24,12 @@ class Main extends Component<Props, State> {
     };
   }
 
-  handleFilesSelected = (potentialSongs: Array<Promise<FileSelection>>) => {
+  handleFilesSelected = async (potentialSongs: Array<Promise<FileSelection>>) => {
+    const { uploadedFiles } = this.state;
+    if (uploadedFiles.length > 0) {
+      await this.removeSongsOneByOne();
+    }
+
     this.setState({
       uploadedFiles: [],
       songsProcessed: 0,
@@ -54,6 +59,26 @@ class Main extends Component<Props, State> {
       },         timeout);
       timeout += 100;
     }
+  }
+
+  removeSongsOneByOne = async () => {
+    return new Promise((resolve, reject) => {
+      const { uploadedFiles } = this.state;
+      let timeout = 100;
+
+      for (let i = 0, len = uploadedFiles.length; i < len; i++) {
+        setTimeout(() => {
+          uploadedFiles.pop();
+
+          this.setState({
+            uploadedFiles,
+          });
+
+          if (uploadedFiles.length < 1) resolve();
+        },         timeout);
+        timeout += 100;
+      }
+    });
   }
 
   render() {

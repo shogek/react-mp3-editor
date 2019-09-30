@@ -154,7 +154,7 @@ class SongRow extends Component<Props, State> {
     } = this.state;
 
     return (
-      <div className="row align-items-center">
+      <div className="row align-items-center mzt-song-container">
 
         <div className="col-12">
           <div className="row mzt-row-song">
