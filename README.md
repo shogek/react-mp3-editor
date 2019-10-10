@@ -26,4 +26,11 @@ That brick only plays .mp3 files (no Spotify).
 I like my playlists organised so I edit my songs (change album covers, etc.).  
 I used to use mp3tag.exe for it but I hated its design too much.  
 So I created my own app to replace it.  
-Plus I wanted to learn react.
+Plus I wanted to learn react.  
+
+
+## Does it have bugs?
+
+Impossible.  
+I create code without bugs.  
+I'm just that good.
