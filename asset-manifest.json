@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/mozart/static/css/main.c6de2ebd.chunk.css",
-    "main.js": "/mozart/static/js/main.c4a90346.chunk.js",
-    "main.js.map": "/mozart/static/js/main.c4a90346.chunk.js.map",
-    "runtime~main.js": "/mozart/static/js/runtime~main.ab52f241.js",
-    "runtime~main.js.map": "/mozart/static/js/runtime~main.ab52f241.js.map",
-    "static/css/2.533d620f.chunk.css": "/mozart/static/css/2.533d620f.chunk.css",
-    "static/js/2.cf4b26b5.chunk.js": "/mozart/static/js/2.cf4b26b5.chunk.js",
-    "static/js/2.cf4b26b5.chunk.js.map": "/mozart/static/js/2.cf4b26b5.chunk.js.map",
-    "index.html": "/mozart/index.html",
-    "precache-manifest.d4e4081ba6206b28a6583765ca995c95.js": "/mozart/precache-manifest.d4e4081ba6206b28a6583765ca995c95.js",
-    "service-worker.js": "/mozart/service-worker.js",
-    "static/css/2.533d620f.chunk.css.map": "/mozart/static/css/2.533d620f.chunk.css.map",
-    "static/css/main.c6de2ebd.chunk.css.map": "/mozart/static/css/main.c6de2ebd.chunk.css.map",
-    "static/media/cover_350x350.png": "/mozart/static/media/cover_350x350.c4a0bf2b.png"
+    "main.css": "/Mozart/static/css/main.c6de2ebd.chunk.css",
+    "main.js": "/Mozart/static/js/main.c4a90346.chunk.js",
+    "main.js.map": "/Mozart/static/js/main.c4a90346.chunk.js.map",
+    "runtime~main.js": "/Mozart/static/js/runtime~main.092cbc59.js",
+    "runtime~main.js.map": "/Mozart/static/js/runtime~main.092cbc59.js.map",
+    "static/css/2.533d620f.chunk.css": "/Mozart/static/css/2.533d620f.chunk.css",
+    "static/js/2.cf4b26b5.chunk.js": "/Mozart/static/js/2.cf4b26b5.chunk.js",
+    "static/js/2.cf4b26b5.chunk.js.map": "/Mozart/static/js/2.cf4b26b5.chunk.js.map",
+    "index.html": "/Mozart/index.html",
+    "precache-manifest.2cdec1ea47755f78df60bfe233337c22.js": "/Mozart/precache-manifest.2cdec1ea47755f78df60bfe233337c22.js",
+    "service-worker.js": "/Mozart/service-worker.js",
+    "static/css/2.533d620f.chunk.css.map": "/Mozart/static/css/2.533d620f.chunk.css.map",
+    "static/css/main.c6de2ebd.chunk.css.map": "/Mozart/static/css/main.c6de2ebd.chunk.css.map",
+    "static/media/cover_350x350.png": "/Mozart/static/media/cover_350x350.c4a0bf2b.png"
   }
 }
