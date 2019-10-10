@@ -109,7 +109,7 @@ class SongRow extends Component<Props, State> {
     });
   }
 
-  handleCutSong = async (cutStart: number, cutEnd: number) => {
+  handleCutSong = async (cutStart: number, cutEnd: number, addFadeIn: boolean, addFadeOut: boolean) => {
     const {
       file,
     } = this.state;
@@ -117,10 +117,19 @@ class SongRow extends Component<Props, State> {
     this.setState({
       isBeingCut: true,
     });
+
+    const cutStartMs = cutStart * 1000;
+    const cutEndMs = cutEnd * 1000;
+    const fadeMs = 3000;
+
     const decoder = new Decoder();
     const buffer = await decoder.decodeFile(file);
-    const manipulator = await new BufferManipulations(buffer);
-    manipulator.cut(cutStart * 1000, cutEnd * 1000);
+
+    const manipulator = new BufferManipulations(buffer);
+    manipulator.cut(cutStartMs, cutEndMs);
+    if (addFadeIn) manipulator.fadeIn(0, fadeMs);
+    if (addFadeOut) manipulator.fadeOut(fadeMs);
+
     const processedBuffer = await manipulator.apply();
 
     const encoder = new Encoder();

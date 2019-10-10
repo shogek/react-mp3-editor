@@ -3,7 +3,7 @@ import Tippy from '@tippy.js/react';
 import Song from '../../models/song';
 import DefaultCover from './cover_350x350.png';
 import AlbumCover from '../../models/albumCover';
-import './song-header.css';
+import './song-header.scss';
 
 type Props = {
   file: File;
@@ -70,14 +70,14 @@ export default function songHeader(props: Props) {
 
         {/* Edit the song's tags */}
         <div className="row" onClick={() => onToggleEditMode()}>
-          <Tippy content="Edit the song's tags" arrow={true} placement="right" delay={400}>
+          <Tippy content="Toggle edit mode" arrow={true} placement="right" delay={400}>
             <i className={`fas fa-pencil-alt mzt-btn-actions ${isEditingEnabled ? 'active' : ''}`}></i>
           </Tippy>
         </div>
 
         {/* Cut the song */}
         <div className="row" onClick={() => onToggleCutMode()}>
-          <Tippy content="Cut the song" arrow={true} placement="right" delay={400}>
+          <Tippy content="Toggle cut mode" arrow={true} placement="right" delay={400}>
             <i className={`fas fa-cut mzt-btn-actions ${isCuttingEnabled ? 'active' : ''}`}></i>
           </Tippy>
         </div>

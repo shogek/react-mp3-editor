@@ -16,33 +16,23 @@ type Props = {
   onCut: Function;
 };
 type State = {
-  /**
-   * Is the song currently playing.
-   */
+  /** Is the song currently playing. */
   isPlaying: boolean;
-  /**
-   * Start time of the region to cut.
-   */
+  /** * Start time of the region to cut. */
   cutStart: number;
-  /**
-   * Original start time of the region (used when user presses 'Cancel')
-   */
+  /** Original start time of the region (used when user presses 'Cancel'). */
   originalCutStart: number;
-  /**
-   * End time of the region to cut.
-   */
+  /** End time of the region to cut. */
   cutEnd: number;
-  /**
-   * Original end time of the region (used when user presses 'Cancel')
-   */
+  /** Original end time of the region (used when user presses 'Cancel'). */
   originalCutEnd: number;
-  /**
-   * The main library for displaying the audio wave.
-   */
+  /** Should the song be cut with a fade in. */
+  addFadeIn: boolean;
+  /** Should the song be cut with a fade out. */
+  addFadeOut: boolean;
+  /** The main library for displaying the audio wave. */
   waveSurfer?: WaveSurfer;
-  /**
-   * Marks whether the regions were moved.
-   */
+  /** Marks whether the regions were moved. */
   wasRegionChanged: boolean;
 };
 
@@ -50,22 +40,18 @@ export default class AudioPlayer extends Component<Props, State> {
   private readonly WAVEFORM_CONTAINER: string = 'waveform';
   private readonly REGION_COLOR: string = 'rgba(0, 123, 255, 0.48)';
 
-  constructor(props: Props) {
-    super(props);
+  state: State = {
+    isPlaying: false,
+    originalCutStart: NaN,
+    originalCutEnd: NaN,
+    cutStart: NaN,
+    cutEnd: NaN,
+    addFadeIn: false,
+    addFadeOut: false,
+    wasRegionChanged: false,
+  };
 
-    this.state = {
-      isPlaying: false,
-      originalCutStart: NaN,
-      originalCutEnd: NaN,
-      cutStart: NaN,
-      cutEnd: NaN,
-      wasRegionChanged: false,
-    };
-  }
-
-  /**
-   * Generate and show the audio wave.
-   */
+  /** Generate and show the audio wave. */
   componentDidMount() {
     const { blobToPlay } = this.props;
 
@@ -267,7 +253,10 @@ export default class AudioPlayer extends Component<Props, State> {
       isPlaying,
       cutStart,
       cutEnd,
+      addFadeIn,
+      addFadeOut,
     } = this.state;
+
     if (!waveSurfer) return;
 
     if (isPlaying) {
@@ -276,12 +265,11 @@ export default class AudioPlayer extends Component<Props, State> {
         isPlaying: false,
       });
     }
-    this.props.onCut(cutStart, cutEnd);
+
+    this.props.onCut(cutStart, cutEnd, addFadeIn, addFadeOut);
   }
 
-  /**
-   * Recreate the initial region.
-   */
+  /** Recreate the initial region. */
   handleClickCancel = () => {
     const {
       waveSurfer,
@@ -303,11 +291,25 @@ export default class AudioPlayer extends Component<Props, State> {
     });
   }
 
+  toggleFadeIn = () => {
+    this.setState((prev: State) => ({
+      addFadeIn: !prev.addFadeIn,
+    }));
+  }
+
+  toggleFadeOut = () => {
+    this.setState((prev: State) => ({
+      addFadeOut: !prev.addFadeOut,
+    }));
+  }
+
   render() {
     const {
       waveSurfer,
       isPlaying,
       wasRegionChanged,
+      addFadeIn,
+      addFadeOut,
     } = this.state;
     const isLoading = waveSurfer ? false : true;
     const toggleIcon = `fas fa-${isPlaying ? 'pause' : 'play'} mzt-btn-actions`;
@@ -332,6 +334,24 @@ export default class AudioPlayer extends Component<Props, State> {
 
             {/* [BUTTONS] */}
             <div className="row justify-content-center">
+              {/* Toggle fade in */}
+              <div className="col-1" >
+                <Tippy content="Toggle fade in" arrow={true} placement="bottom" delay={400} >
+                  <i
+                    className={`fas fa-signal mzt-btn-actions ${addFadeIn ? 'active' : ''}`}
+                    onClick={this.toggleFadeIn} />
+                </Tippy>
+              </div>
+
+              {/* Toggle fade out */}
+              <div className="col-1" >
+                <Tippy content="Toggle fade out" arrow={true} placement="bottom" delay={400} >
+                  <i
+                    className={`fas fa-signal mzt-btn-actions mirrored ${addFadeOut ? 'active' : ''}`}
+                    onClick={this.toggleFadeOut} />
+                </Tippy>
+              </div>
+
               {/* Cut the song */}
               <div className="col-1" >
                 <Tippy content="Cut the song to selected region" arrow={true} placement="bottom" delay={400} >
@@ -368,7 +388,7 @@ export default class AudioPlayer extends Component<Props, State> {
 
               {/* Cancel changes (recreate initial region) */}
               <div className="col-1" >
-                <Tippy content="Cancel" arrow={true} placement="bottom" delay={400} >
+                <Tippy content="Recreate regions" arrow={true} placement="bottom" delay={400} >
                 <i
                   className={`fas fa-ban mzt-btn-actions ${wasRegionChanged ? '' : 'disabled'}`}
                   {...(wasRegionChanged ? { onClick: this.handleClickCancel } : {})}

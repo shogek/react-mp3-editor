@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap');
+
+.mzt-song-wrapper {
+  margin-bottom: 1%;
+}
+
+.mzt-col-song-header {
+  padding-left: 0;
+}
+
+.mzt-song-filename {
+  font-weight: bold;
+  font-family: 'Roboto', sans-serif;
+}
+
+.mzt-song-heading {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.mzt-btn-actions {
+  padding: 0.8em 0.8em 0.8em 0.8em;
+  margin: 0.2em 0 0.2em 0;
+  color: gray;
+  cursor: pointer;
+  outline-color: white;
+
+  &.active {
+    background: -webkit-gradient(linear, left top, left bottom, from(#21D4FD), to(#B721FF));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  &.success {
+    background: -webkit-gradient(linear, left top, left bottom, from(rgb(62, 214, 248)), to( rgb(0, 240, 132)));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  &.mirrored {
+    transform: scale(-1, 1);
+  }
+
+  &:hover {
+    color: black;
+    outline-color: white;
+  }
+}
+.img-thumbnail {
+  border-style: none;
+  height: 15vh;
+  padding: 0;
+}
+
+i {
+  &.disabled {
+    color: #8080805e;
+
+    &:hover {
+      color: #8080805e;
+      cursor: default;
+    }
+  }
+}
