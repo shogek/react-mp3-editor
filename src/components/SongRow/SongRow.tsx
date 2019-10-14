@@ -140,9 +140,6 @@ class SongRow extends Component<Props, State> {
     });
   }
 
-  /**
-   * @param song Editable song with the new album cover.
-   */
   onAlbumCoverUploaded = (newCover: AlbumCover) => {
     this.setState({
       albumCover: newCover,

@@ -30,8 +30,6 @@ type State = {
   addFadeIn: boolean;
   /** Should the song be cut with a fade out. */
   addFadeOut: boolean;
-  /** The main library for displaying the audio wave. */
-  waveSurfer?: WaveSurfer;
   /** Marks whether the regions were moved. */
   wasRegionChanged: boolean;
 };
@@ -39,6 +37,9 @@ type State = {
 export default class AudioPlayer extends Component<Props, State> {
   private readonly WAVEFORM_CONTAINER: string = 'waveform';
   private readonly REGION_COLOR: string = 'rgba(0, 123, 255, 0.48)';
+
+  /** The main library for displaying the audio wave. */
+  private waveSurfer!: WaveSurfer;
 
   state: State = {
     isPlaying: false,
@@ -59,7 +60,7 @@ export default class AudioPlayer extends Component<Props, State> {
     const componentDiv = ReactDOM.findDOMNode(this) as HTMLElement;
     const waveformDiv = componentDiv.getElementsByClassName('waveform')[0] as HTMLElement;
 
-    const waveSurfer = WaveSurfer.create({
+    this.waveSurfer = WaveSurfer.create({
       // Get the specific DOM element for storing the wave visualization
       container: waveformDiv,
       ...waveConfig,
@@ -70,16 +71,13 @@ export default class AudioPlayer extends Component<Props, State> {
         RegionsPlugin.create(),
       ],
     });
-    waveSurfer.on('ready', () => this.onWaveSurferReady(waveSurfer));
-    waveSurfer.on('finish', () => this.onSongFinishedPlaying());
-    waveSurfer.loadBlob(blobToPlay);
+    this.waveSurfer.on('ready', () => this.onWaveSurferReady(this.waveSurfer));
+    this.waveSurfer.on('finish', () => this.onSongFinishedPlaying());
+    this.waveSurfer.loadBlob(blobToPlay);
   }
 
   componentWillUnmount = () => {
-    const { waveSurfer } = this.state;
-    if (!waveSurfer) return;
-
-    waveSurfer.destroy();
+    this.waveSurfer.destroy();
   }
 
   /**
@@ -110,7 +108,6 @@ export default class AudioPlayer extends Component<Props, State> {
     });
 
     this.setState({
-      waveSurfer,
       cutStart,
       cutEnd,
       originalCutStart: cutStart,
@@ -129,9 +126,11 @@ export default class AudioPlayer extends Component<Props, State> {
    */
   onCropRegionUpdated = (params: any) => {
     const { start, end } = params;
-    const { cutStart, cutEnd, waveSurfer, isPlaying } = this.state;
-
-    if (!waveSurfer) return;
+    const {
+      cutStart,
+      cutEnd,
+      isPlaying,
+    } = this.state;
 
     // Remove region's 'title' attribute showing the region's duration.
     params.element.attributes.title.value = '';
@@ -142,37 +141,26 @@ export default class AudioPlayer extends Component<Props, State> {
     }
 
     // Recreate region from last know valid positions
-    const newRegion = this.recreateRegion(waveSurfer, cutStart, cutEnd);
+    const newRegion = this.recreateRegion(this.waveSurfer, cutStart, cutEnd);
 
     if (isPlaying) {
       newRegion.play();
     }
-
-    this.setState({
-      waveSurfer,
-    });
   }
 
-  /**
-   * Called when the region has finished moving (drag/expand/shrink).
-   */
+  /** Called when the region has finished moving (drag/expand/shrink). */
   onCropRegionUpdateEnd = (params: any) => {
     const regionStart = params.start;
     const regionEnd = params.end;
     const {
       isPlaying,
-      waveSurfer,
       cutStart,
     } = this.state;
 
-    if (!waveSurfer) return;
-
     if (isPlaying) {
-      if (regionStart !== cutStart) {
-        waveSurfer.play(regionStart);
-      } else {
-        waveSurfer.play(regionEnd);
-      }
+      regionStart !== cutStart
+        ? this.waveSurfer.play(regionStart)
+        : this.waveSurfer.play(regionEnd);
     }
 
     this.setState({
@@ -202,54 +190,21 @@ export default class AudioPlayer extends Component<Props, State> {
     });
   }
 
-  /**
-   * Play or pause the audio playback.
-   */
+  /** Play or pause the audio playback. */
   handleClickTogglePlay = () => {
     const {
-      waveSurfer,
       isPlaying,
     } = this.state;
 
-    if (!waveSurfer) return;
-
-    if (isPlaying) {
-      waveSurfer.pause();
-    } else {
-      waveSurfer.play();
-    }
+    isPlaying
+      ? this.waveSurfer.pause()
+      : this.waveSurfer.play();
 
     this.setState({ isPlaying: !isPlaying });
   }
 
-  /**
-   * Jump the playback to the beginning/end of the song.
-   */
-  handleClickJump = (jumpToEnd: boolean = true) => {
-    const { isPlaying, waveSurfer } = this.state;
-    if (!waveSurfer) {
-      return;
-    }
-
-    if (jumpToEnd) {
-      const duration = waveSurfer.getDuration();
-      const current = waveSurfer.getCurrentTime();
-      waveSurfer.skip(duration - current - 5);
-      waveSurfer.pause();
-      waveSurfer.skipForward();
-      this.setState({ isPlaying: false });
-    } else {
-      waveSurfer.stop();
-      // If the song isn't playing - don't start it
-      if (isPlaying) {
-        waveSurfer.play();
-      }
-    }
-  }
-
   handleClickCut = () => {
     const {
-      waveSurfer,
       isPlaying,
       cutStart,
       cutEnd,
@@ -257,38 +212,14 @@ export default class AudioPlayer extends Component<Props, State> {
       addFadeOut,
     } = this.state;
 
-    if (!waveSurfer) return;
-
     if (isPlaying) {
-      waveSurfer.stop();
+      this.waveSurfer.stop();
       this.setState({
         isPlaying: false,
       });
     }
 
     this.props.onCut(cutStart, cutEnd, addFadeIn, addFadeOut);
-  }
-
-  /** Recreate the initial region. */
-  handleClickCancel = () => {
-    const {
-      waveSurfer,
-      originalCutStart,
-      originalCutEnd,
-    } = this.state;
-
-    if (!waveSurfer) return;
-
-    this.recreateRegion(waveSurfer, originalCutStart, originalCutEnd);
-    waveSurfer.stop();
-
-    this.setState({
-      waveSurfer,
-      isPlaying: false,
-      cutStart: originalCutStart,
-      cutEnd: originalCutEnd,
-      wasRegionChanged: false,
-    });
   }
 
   toggleFadeIn = () => {
@@ -305,13 +236,12 @@ export default class AudioPlayer extends Component<Props, State> {
 
   render() {
     const {
-      waveSurfer,
       isPlaying,
       wasRegionChanged,
       addFadeIn,
       addFadeOut,
     } = this.state;
-    const isLoading = waveSurfer ? false : true;
+    const isLoading = this.waveSurfer ? false : true;
     const toggleIcon = `fas fa-${isPlaying ? 'pause' : 'play'} mzt-btn-actions`;
     const tooltip = isPlaying ? 'Pause' : 'Play';
 
@@ -334,67 +264,51 @@ export default class AudioPlayer extends Component<Props, State> {
 
             {/* [BUTTONS] */}
             <div className="row justify-content-center">
-              {/* Toggle fade in */}
-              <div className="col-1" >
-                <Tippy content="Toggle fade in" arrow={true} placement="bottom" delay={400} >
-                  <i
-                    className={`fas fa-signal mzt-btn-actions ${addFadeIn ? 'active' : ''}`}
-                    onClick={this.toggleFadeIn} />
-                </Tippy>
-              </div>
 
-              {/* Toggle fade out */}
-              <div className="col-1" >
-                <Tippy content="Toggle fade out" arrow={true} placement="bottom" delay={400} >
-                  <i
-                    className={`fas fa-signal mzt-btn-actions mirrored ${addFadeOut ? 'active' : ''}`}
-                    onClick={this.toggleFadeOut} />
-                </Tippy>
-              </div>
+              {/* COLUMN 1 */}
+              <div className="col-3">
+                <div className="row">
 
-              {/* Cut the song */}
-              <div className="col-1" >
-                <Tippy content="Cut the song to selected region" arrow={true} placement="bottom" delay={400} >
-                  <i
-                    className={`fas fa-cut mzt-btn-actions ${wasRegionChanged ? 'success' : 'disabled'}`}
-                    {...(wasRegionChanged ? { onClick: this.handleClickCut } : {})}
-                  />
-                </Tippy>
-              </div>
+                  {/* Play/pause the song */}
+                  <div className="col">
+                    <Tippy content={tooltip} arrow={true} placement="bottom" delay={400} >
+                      <i className={toggleIcon} onClick={() => this.handleClickTogglePlay()} />
+                    </Tippy>
+                  </div>
 
-              {/* Jump to the beginning of the song */}
-              <div className="col-1" >
-                <Tippy content="Jump to start" arrow={true} placement="bottom" delay={400} >
-                  <i className="fas fa-step-backward mzt-btn-actions"
-                    onClick={() => this.handleClickJump(false)} />
-                </Tippy>
-              </div>
+                  {/* Toggle fade in */}
+                  <div className="col" >
+                    <Tippy content="Toggle 3 second fade in" arrow={true} placement="bottom" delay={400} >
+                      <i className={`fas fa-signal mzt-btn-actions ${addFadeIn ? 'active' : ''}`}
+                        onClick={this.toggleFadeIn} />
+                    </Tippy>
+                  </div>
 
-              {/* Play/pause the song */}
-              <div className="col-1">
-                <Tippy content={tooltip} arrow={true} placement="bottom" delay={400} >
-                  <i className={toggleIcon}
-                    onClick={() => this.handleClickTogglePlay()} />
-                </Tippy>
-              </div>
+                  {/* Toggle fade out */}
+                  <div className="col" >
+                    <Tippy content="Toggle 3 second fade out" arrow={true} placement="bottom" delay={400} >
+                      <i className={`fas fa-signal mzt-btn-actions mirrored ${addFadeOut ? 'active' : ''}`}
+                        onClick={this.toggleFadeOut} />
+                    </Tippy>
+                  </div>
+                </div>
+              </div> {/* END OF COLUMN 1 */}
 
-              {/* Jump to end */}
-              <div className="col-1" >
-                <Tippy content="Jump to end" arrow={true} placement="bottom" delay={400} >
-                  <i className="fas fa-step-forward mzt-btn-actions"
-                    onClick={() => this.handleClickJump(true)} />
-                </Tippy>
-              </div>
+              {/* COLUMN 2 */}
+              <div className="col-4">
+                <div className="row">
 
-              {/* Cancel changes (recreate initial region) */}
-              <div className="col-1" >
-                <Tippy content="Recreate regions" arrow={true} placement="bottom" delay={400} >
-                <i
-                  className={`fas fa-ban mzt-btn-actions ${wasRegionChanged ? '' : 'disabled'}`}
-                  {...(wasRegionChanged ? { onClick: this.handleClickCancel } : {})}
-                />
-                </Tippy>
-              </div>
+                  {/* Cut the song */}
+                  <div className="col" >
+                    <Tippy content="Cut the song to selected region" arrow={true} placement="bottom" delay={400} >
+                      <i className={`fas fa-cut mzt-btn-actions ${wasRegionChanged ? 'success' : 'disabled'}`}
+                        {...(wasRegionChanged ? { onClick: this.handleClickCut } : {})} />
+                    </Tippy>
+                  </div>
+
+                </div>
+              </div> {/* END OF COLUMN 2 */}
+
             </div> {/* END OF [BUTTONS] ROW */}
 
           </div>
