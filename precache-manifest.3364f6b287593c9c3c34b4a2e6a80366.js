@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "ccbf8cba3836a805e157c2b79fbb5693",
+    "revision": "8ce6019a3bdc394187f10b8a30678634",
     "url": "/react-mp3-editor/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/react-mp3-editor/static/css/2.533d620f.chunk.css"
   },
   {
-    "revision": "c2734321cb209fcd4812",
+    "revision": "23c7a1749bb4c2b4e24a",
     "url": "/react-mp3-editor/static/css/main.2fe3ee91.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/react-mp3-editor/static/js/2.d9bf0946.chunk.js"
   },
   {
-    "revision": "c2734321cb209fcd4812",
-    "url": "/react-mp3-editor/static/js/main.fee7c24c.chunk.js"
+    "revision": "23c7a1749bb4c2b4e24a",
+    "url": "/react-mp3-editor/static/js/main.0856d92d.chunk.js"
   },
   {
     "revision": "37d8894cd77200ee141f",
