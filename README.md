@@ -1,7 +1,7 @@
 # Mozart
 
 Mozart is an .mp3 file editing tool.  
-You can try it here: https://shogek.github.io/Mozart/
+You can try it here: https://shogek.github.io/react-mp3-editor/
 
 
 ## What does it do?
