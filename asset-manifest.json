@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.css": "/static/css/main.2fe3ee91.chunk.css",
-    "main.js": "/static/js/main.cd229650.chunk.js",
-    "main.js.map": "/static/js/main.cd229650.chunk.js.map",
-    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
-    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
-    "static/css/2.533d620f.chunk.css": "/static/css/2.533d620f.chunk.css",
-    "static/js/2.d9bf0946.chunk.js": "/static/js/2.d9bf0946.chunk.js",
-    "static/js/2.d9bf0946.chunk.js.map": "/static/js/2.d9bf0946.chunk.js.map",
-    "index.html": "/index.html",
-    "precache-manifest.f56a3237c8a95bb99f7ff0834477b314.js": "/precache-manifest.f56a3237c8a95bb99f7ff0834477b314.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/2.533d620f.chunk.css.map": "/static/css/2.533d620f.chunk.css.map",
-    "static/css/main.2fe3ee91.chunk.css.map": "/static/css/main.2fe3ee91.chunk.css.map",
-    "static/media/cover_350x350.png": "/static/media/cover_350x350.c4a0bf2b.png",
-    "static/media/song1.mp3": "/static/media/song1.b21c4c33.mp3",
-    "static/media/song2.mp3": "/static/media/song2.7e259364.mp3",
-    "static/media/song3.mp3": "/static/media/song3.a2ee4787.mp3"
+    "main.css": "/react-mp3-editor/static/css/main.2fe3ee91.chunk.css",
+    "main.js": "/react-mp3-editor/static/js/main.cd229650.chunk.js",
+    "main.js.map": "/react-mp3-editor/static/js/main.cd229650.chunk.js.map",
+    "runtime~main.js": "/react-mp3-editor/static/js/runtime~main.e4833951.js",
+    "runtime~main.js.map": "/react-mp3-editor/static/js/runtime~main.e4833951.js.map",
+    "static/css/2.533d620f.chunk.css": "/react-mp3-editor/static/css/2.533d620f.chunk.css",
+    "static/js/2.d9bf0946.chunk.js": "/react-mp3-editor/static/js/2.d9bf0946.chunk.js",
+    "static/js/2.d9bf0946.chunk.js.map": "/react-mp3-editor/static/js/2.d9bf0946.chunk.js.map",
+    "index.html": "/react-mp3-editor/index.html",
+    "precache-manifest.994b74a40343caf06d544ca11d1efa2e.js": "/react-mp3-editor/precache-manifest.994b74a40343caf06d544ca11d1efa2e.js",
+    "service-worker.js": "/react-mp3-editor/service-worker.js",
+    "static/css/2.533d620f.chunk.css.map": "/react-mp3-editor/static/css/2.533d620f.chunk.css.map",
+    "static/css/main.2fe3ee91.chunk.css.map": "/react-mp3-editor/static/css/main.2fe3ee91.chunk.css.map",
+    "static/media/cover_350x350.png": "/react-mp3-editor/static/media/cover_350x350.c4a0bf2b.png",
+    "static/media/song1.mp3": "/react-mp3-editor/static/media/song1.b21c4c33.mp3",
+    "static/media/song2.mp3": "/react-mp3-editor/static/media/song2.7e259364.mp3",
+    "static/media/song3.mp3": "/react-mp3-editor/static/media/song3.a2ee4787.mp3"
   }
 }
