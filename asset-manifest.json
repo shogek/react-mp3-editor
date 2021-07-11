@@ -1,18 +1,21 @@
 {
   "files": {
-    "main.css": "/Mozart/static/css/main.c6de2ebd.chunk.css",
-    "main.js": "/Mozart/static/js/main.c4a90346.chunk.js",
-    "main.js.map": "/Mozart/static/js/main.c4a90346.chunk.js.map",
+    "main.css": "/Mozart/static/css/main.2fe3ee91.chunk.css",
+    "main.js": "/Mozart/static/js/main.cd229650.chunk.js",
+    "main.js.map": "/Mozart/static/js/main.cd229650.chunk.js.map",
     "runtime~main.js": "/Mozart/static/js/runtime~main.092cbc59.js",
     "runtime~main.js.map": "/Mozart/static/js/runtime~main.092cbc59.js.map",
     "static/css/2.533d620f.chunk.css": "/Mozart/static/css/2.533d620f.chunk.css",
-    "static/js/2.cf4b26b5.chunk.js": "/Mozart/static/js/2.cf4b26b5.chunk.js",
-    "static/js/2.cf4b26b5.chunk.js.map": "/Mozart/static/js/2.cf4b26b5.chunk.js.map",
+    "static/js/2.d9bf0946.chunk.js": "/Mozart/static/js/2.d9bf0946.chunk.js",
+    "static/js/2.d9bf0946.chunk.js.map": "/Mozart/static/js/2.d9bf0946.chunk.js.map",
     "index.html": "/Mozart/index.html",
-    "precache-manifest.2cdec1ea47755f78df60bfe233337c22.js": "/Mozart/precache-manifest.2cdec1ea47755f78df60bfe233337c22.js",
+    "precache-manifest.b5b93e0451bb2cf0d4f5e03003f0ecc3.js": "/Mozart/precache-manifest.b5b93e0451bb2cf0d4f5e03003f0ecc3.js",
     "service-worker.js": "/Mozart/service-worker.js",
     "static/css/2.533d620f.chunk.css.map": "/Mozart/static/css/2.533d620f.chunk.css.map",
-    "static/css/main.c6de2ebd.chunk.css.map": "/Mozart/static/css/main.c6de2ebd.chunk.css.map",
-    "static/media/cover_350x350.png": "/Mozart/static/media/cover_350x350.c4a0bf2b.png"
+    "static/css/main.2fe3ee91.chunk.css.map": "/Mozart/static/css/main.2fe3ee91.chunk.css.map",
+    "static/media/cover_350x350.png": "/Mozart/static/media/cover_350x350.c4a0bf2b.png",
+    "static/media/song1.mp3": "/Mozart/static/media/song1.b21c4c33.mp3",
+    "static/media/song2.mp3": "/Mozart/static/media/song2.7e259364.mp3",
+    "static/media/song3.mp3": "/Mozart/static/media/song3.a2ee4787.mp3"
   }
 }
