@@ -2,7 +2,7 @@
   "name": "mozart",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://shogek.github.io/Mozart",
+  "homepage": "https://shogek.github.io/react-mp3-editor",
   "dependencies": {
     "@tippy.js/react": "^2.2.3",
     "@types/jest": "24.0.13",

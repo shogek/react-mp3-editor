@@ -5,11 +5,17 @@ import './file-input.css';
 type Props = {
   onFilesSelected: Function,
 };
-type State = {};
+type State = {
+  isProcessing: boolean,
+};
 
 class FileInput extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
+
+    this.state = {
+      isProcessing: false,
+    };
 
     this.onFilesSelected = this.onFilesSelected.bind(this);
     this.onLoadDummySongs = this.onLoadDummySongs.bind(this);
@@ -41,7 +47,6 @@ class FileInput extends Component<Props, State> {
         const file = new File([blob], "song1.mp3");
         dummySongs.push(file);
         if (dummySongs.length === 3) {
-          this.setState({dummyFilesLoaded: true})
           const potentialSongs = await FileHelper.convertFilesToSongs(dummySongs);
           this.props.onFilesSelected(potentialSongs);
         }
@@ -54,7 +59,6 @@ class FileInput extends Component<Props, State> {
         const file = new File([blob], "song2.mp3");
         dummySongs.push(file);
         if (dummySongs.length === 3) {
-          this.setState({dummyFilesLoaded: true})
           const potentialSongs = await FileHelper.convertFilesToSongs(dummySongs);
           this.props.onFilesSelected(potentialSongs);
         }
@@ -67,12 +71,13 @@ class FileInput extends Component<Props, State> {
         const file = new File([blob], "song3.mp3");
         dummySongs.push(file);
         if (dummySongs.length === 3) {
-          this.setState({dummyFilesLoaded: true})
           const potentialSongs = await FileHelper.convertFilesToSongs(dummySongs);
           this.props.onFilesSelected(potentialSongs);
         }
       }
     );
+
+    this.setState({isProcessing: true});
   }
 
   async onFilesSelected(e: ChangeEvent<HTMLInputElement>) {
@@ -93,6 +98,16 @@ class FileInput extends Component<Props, State> {
   }
 
   render() {
+    const loadingMessage = !this.state.isProcessing
+      ? null
+      : (
+        <div className="row">
+          <div className="col d-flex justify-content-end">
+            Loading dummy songs
+          </div>
+        </div>
+      );
+
     return (
       <div className="row justify-content-center mb-4">
         <div className="col-4">
@@ -109,8 +124,9 @@ class FileInput extends Component<Props, State> {
               Load dummy songs
             </div>
           </div>
-          
 
+          {loadingMessage}
+          
           {/* Hidden */}
           <input id="btn-upload-songs"
             className="mzt-invisible"
