@@ -1,5 +1,6 @@
 import React, { Component, ChangeEvent } from 'react';
 import FileHelper from '../../helpers/fileHelper';
+import './file-input.css';
 
 type Props = {
   onFilesSelected: Function,
@@ -11,13 +12,67 @@ class FileInput extends Component<Props, State> {
     super(props);
 
     this.onFilesSelected = this.onFilesSelected.bind(this);
+    this.onLoadDummySongs = this.onLoadDummySongs.bind(this);
   }
 
-  onInputClicked() {
+  async onInputClicked() {
     const input = document.getElementById('btn-upload-songs');
     if (input) {
       input.click();
     }
+  }
+
+  /**
+   * IGNORE THE CODING CONVENTIONS USED IN THIS NEW FUNCTION.
+   * THE PROJECT IS NO LONGER MAINTAINED AND I ONLY WANTED TO
+   * ADD THE "LOAD DUMMY SONGS" OPTION.
+   * i can write good code pls i promis
+   */
+  async onLoadDummySongs() {
+    const song1 = require('../../songs/song1.mp3');
+    const song2 = require('../../songs/song2.mp3');
+    const song3 = require('../../songs/song3.mp3');
+    
+    const dummySongs: File[] = [];
+
+    await fetch(song1)
+      .then(response => response.blob())
+      .then(async blob => {
+        const file = new File([blob], "song1.mp3");
+        dummySongs.push(file);
+        if (dummySongs.length === 3) {
+          this.setState({dummyFilesLoaded: true})
+          const potentialSongs = await FileHelper.convertFilesToSongs(dummySongs);
+          this.props.onFilesSelected(potentialSongs);
+        }
+      }
+    );
+
+    await fetch(song2)
+      .then(response => response.blob())
+      .then(async blob => {
+        const file = new File([blob], "song2.mp3");
+        dummySongs.push(file);
+        if (dummySongs.length === 3) {
+          this.setState({dummyFilesLoaded: true})
+          const potentialSongs = await FileHelper.convertFilesToSongs(dummySongs);
+          this.props.onFilesSelected(potentialSongs);
+        }
+      }
+    );
+
+    await fetch(song3)
+      .then(response => response.blob())
+      .then(async blob => {
+        const file = new File([blob], "song3.mp3");
+        dummySongs.push(file);
+        if (dummySongs.length === 3) {
+          this.setState({dummyFilesLoaded: true})
+          const potentialSongs = await FileHelper.convertFilesToSongs(dummySongs);
+          this.props.onFilesSelected(potentialSongs);
+        }
+      }
+    );
   }
 
   async onFilesSelected(e: ChangeEvent<HTMLInputElement>) {
@@ -40,12 +95,21 @@ class FileInput extends Component<Props, State> {
   render() {
     return (
       <div className="row justify-content-center mb-4">
-        <div className="col-2">
+        <div className="col-4">
 
           {/* Visible */}
-          <div className="btn btn-primary" onClick={this.onInputClicked}>
-            Upload songs
+          <div className="song-buttons">
+            <div className="btn btn-primary" onClick={this.onInputClicked}>
+              Upload songs
+            </div>
+
+            <span>or</span>
+
+            <div className="btn btn-primary" onClick={this.onLoadDummySongs}>
+              Load dummy songs
+            </div>
           </div>
+          
 
           {/* Hidden */}
           <input id="btn-upload-songs"
