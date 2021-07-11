@@ -41,7 +41,7 @@ class FileInput extends Component<Props, State> {
     
     const dummySongs: File[] = [];
 
-    await fetch(song1)
+    fetch(song1)
       .then(response => response.blob())
       .then(async blob => {
         const file = new File([blob], "song1.mp3");
@@ -53,7 +53,7 @@ class FileInput extends Component<Props, State> {
       }
     );
 
-    await fetch(song2)
+    fetch(song2)
       .then(response => response.blob())
       .then(async blob => {
         const file = new File([blob], "song2.mp3");
@@ -65,7 +65,7 @@ class FileInput extends Component<Props, State> {
       }
     );
 
-    await fetch(song3)
+    fetch(song3)
       .then(response => response.blob())
       .then(async blob => {
         const file = new File([blob], "song3.mp3");
